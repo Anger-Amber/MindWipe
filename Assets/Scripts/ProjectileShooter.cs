@@ -1,0 +1,242 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Mathematics;
+using UnityEngine;
+
+public class ProjectileShooter : MonoBehaviour
+{
+    //components
+    [SerializeField] Transform firePoint;
+    [SerializeField] Transform origin;
+    [SerializeField] Transform parentsTransform;
+
+    [SerializeField] Transform[] possibleTargets;
+    [SerializeField] Transform targetTransform;
+
+    [SerializeField] GameObject bulletPrefab;
+    [SerializeField] SpriteRenderer bulletSprite;
+    [SerializeField] CircleCollider2D colliderSettings;
+    [SerializeField] Targetables parentsTargetList;
+    [SerializeField] ForwardingTransforms parentsForwardingTransform;
+    [SerializeField] Camera cam;
+
+    [SerializeField] float[] bulletSpreadAndAmount =
+    {
+        -10,
+        0,
+        10,
+    };
+    [SerializeField] float bulletSpeed = 1f;
+    [SerializeField] float bulletDamage = 10f;
+    [SerializeField] float bulletGravity = 0f;
+    [SerializeField] float bulletScale = 1f;
+    [SerializeField] float bulletTimer = 1f;
+    [SerializeField] float fireRate = 1f;
+    [SerializeField] float time = 0f;
+
+    [SerializeField] bool isPlayer = false;
+    [SerializeField] bool isSecurity = false;
+
+    [SerializeField] Vector2 targetPosition = new (0,0);
+
+    [SerializeField] quaternion tempRotation;
+
+    private void Awake()
+    {
+        //getting The Bullet Sprite 
+        bulletPrefab = gameObject.transform.GetChild(0).gameObject;
+        firePoint = gameObject.transform.GetChild(1).gameObject.transform;
+        bulletSprite = bulletPrefab.GetComponent<SpriteRenderer>();
+        colliderSettings = bulletPrefab.GetComponent<CircleCollider2D>();
+        origin = gameObject.transform;
+
+        //getting If You Are A Player Or Not
+        parentsForwardingTransform = GetComponentInParent<ForwardingTransforms>();
+        parentsTransform = parentsForwardingTransform.transform;
+        cam = Camera.main;
+        if (parentsTransform.CompareTag("Player"))
+        {
+            isPlayer = true;
+            time = -1;
+        }
+        else
+        {
+            parentsTargetList = GetComponentInParent<Targetables>();
+        }
+    }
+
+    private void Update()
+    {
+        
+        if (!isPlayer)
+        {
+            //makes the shooter look at the target
+            possibleTargets = parentsTargetList.compressedTargetList;
+            targetTransform = GetClosestEnemy(possibleTargets);
+            targetPosition = targetTransform.position - gameObject.transform.position;
+            float angle = Mathf.Atan2(targetPosition.y, targetPosition.x) * Mathf.Rad2Deg - 0f;
+            if (angle > 90f)
+            {
+                origin.transform.rotation = Quaternion.Euler(180, 0, -angle);
+            }
+            else if (angle < -90f)
+            {
+                origin.transform.rotation = Quaternion.Euler(180, 0, -angle);
+            }
+            else
+            {
+                origin.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+        }
+
+        // temporary Scuff Prority 4
+        // player Looks At The Cursor
+        if (isPlayer)
+        {
+
+            targetPosition = new Vector2();
+            if (time > 0)
+            {
+                targetPosition = cam.ScreenToWorldPoint(Input.mousePosition) - gameObject.transform.position;
+            }
+            float angle = Mathf.Atan2(targetPosition.y, targetPosition.x) * Mathf.Rad2Deg - 0f;
+            if (angle > 90f && parentsTransform.localScale.x == 1)
+            {
+                origin.transform.rotation = Quaternion.Euler(180, 0, -angle);
+                origin.transform.localScale = Vector3.one;
+            }
+            else if (angle < -90f && parentsTransform.localScale.x == 1)
+            {
+                origin.transform.rotation = Quaternion.Euler(180, 0, -angle);
+                origin.transform.localScale = Vector3.one;
+            }
+            else if (angle < 90 && angle > -90 && parentsTransform.localScale.x == 1)
+            {
+                origin.transform.rotation = Quaternion.Euler(0, 0, angle);
+                origin.transform.localScale = Vector3.one;
+            }
+
+            if (angle > 90f && parentsTransform.localScale.x == -1)
+            {
+                origin.transform.rotation = Quaternion.Euler(180, 0, -angle);
+                origin.localScale = new Vector3(-1,1,1);
+            }
+            else if (angle < -90f && parentsTransform.localScale.x == -1)
+            {
+                origin.transform.rotation = Quaternion.Euler(180, 0, -angle);
+                origin.localScale = new Vector3(-1, 1, 1);
+            }
+            else if (angle < 90 && angle > -90 && parentsTransform.localScale.x == -1)
+            {
+                origin.transform.rotation = Quaternion.Euler(0, 0, angle);
+                origin.localScale = new Vector3(-1, 1, 1);
+            }
+
+        }
+
+        // firing
+        if (time < fireRate)
+        {
+            time += Time.deltaTime;
+        }
+        else
+        {
+            time = fireRate;
+        }
+
+        // if Not Player
+        if (time >= fireRate && !isPlayer)
+        {
+            for (int i = 0; i < bulletSpreadAndAmount.Length; i++)
+            {
+                Shoot(bulletSpreadAndAmount[i]);
+            }
+            time -= fireRate;
+        }
+
+        // if Player
+        if (time >= fireRate && Input.GetMouseButtonDown(0) && isPlayer)
+        {
+            for (int i = 0; i < bulletSpreadAndAmount.Length; i++)
+            {
+                Shoot(bulletSpreadAndAmount[i]);
+            }
+            time -= fireRate;
+        } 
+    }
+
+    void Shoot(float rotation)
+    {
+        //making The Bullet(I Don't like instansiate);   <-- get it cause programming :O
+        //i Have Sleep Deprivation
+        //i Will Probably delete this sometime
+        GameObject shotBullet;
+        shotBullet = new GameObject
+        (
+            "bullet",
+            typeof(Rigidbody2D),
+            typeof(bullet),
+            typeof(SpriteRenderer),
+            typeof(CircleCollider2D)
+        );
+        //scale
+        shotBullet.transform.localScale = new Vector3(bulletScale,bulletScale,bulletScale);
+
+        //position
+        shotBullet.transform.position = firePoint.position;
+        shotBullet.transform.rotation = gameObject.transform.rotation;
+        shotBullet.transform.Rotate(0,0,rotation);
+
+        //getting The Components Through Code
+        SpriteRenderer spriteRenderer = shotBullet.GetComponent<SpriteRenderer>();
+        Rigidbody2D bulletRigidbody = shotBullet.GetComponent<Rigidbody2D>();
+        bullet bulletScript = shotBullet.GetComponent<bullet>();
+        CircleCollider2D circleCollider = shotBullet.GetComponent<CircleCollider2D>();
+
+        //rigidbody Settings 
+        bulletRigidbody.freezeRotation = true;
+
+        //collider Settings
+        circleCollider.includeLayers = colliderSettings.includeLayers;
+        circleCollider.excludeLayers = colliderSettings.excludeLayers;
+        circleCollider.radius = circleCollider.radius * 0.40f;
+        circleCollider.isTrigger = true;
+
+        //just for fun, doesn't do shit
+        bulletSprite.transform.position = firePoint.transform.position; 
+
+        //settings Of The Bullets
+        spriteRenderer.sprite = bulletSprite.sprite;
+        spriteRenderer.color = bulletSprite.color;
+        spriteRenderer.sortingOrder = 100;
+        bulletRigidbody.gravityScale = bulletGravity;
+        bulletScript.damage = bulletDamage;
+        bulletScript.speed = bulletSpeed;
+        bulletScript.doActions = true;
+        bulletScript.timer = bulletTimer;
+    }
+
+    // "borrowed" Code
+    Transform GetClosestEnemy(Transform[] enemies)
+    {
+        Transform targetMinimum = null;
+        float minimumDistance = Mathf.Infinity;
+        Vector3 currentPos = transform.position;
+        foreach (Transform t in enemies)
+        {
+            if (t != null)
+            {
+                float distance = Vector3.Distance(t.position, currentPos);
+                if (distance < minimumDistance &&
+                    t != origin &&
+                    t != parentsForwardingTransform)
+                {
+                    targetMinimum = t;
+                    minimumDistance = distance;
+                }
+            }
+        }
+        return targetMinimum;
+    }
+}
