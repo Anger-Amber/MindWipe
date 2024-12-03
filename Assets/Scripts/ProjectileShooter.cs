@@ -171,6 +171,7 @@ public class ProjectileShooter : MonoBehaviour
         //making The Bullet(I Don't like instansiate);   <-- get it cause programming :O
         //i Have Sleep Deprivation
         //i Will Probably delete this sometime
+        //ha ha fuck you I won't
         GameObject shotBullet;
         shotBullet = new GameObject
         (

@@ -126,7 +126,7 @@ MonoBehaviour:
   fireRate: 1
   time: 0
   isPlayer: 0
-  isSecurity: 0
+  isSecurity: 1
   targetPosition: {x: 0, y: 0}
   tempRotation:
     value:
@@ -527,3 +527,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMobile: 0
   healthPoints: 50
+  healthScript: {fileID: 0}
