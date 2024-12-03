@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class bullet : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
     public float speed = 1.0f;
     public float damage = 10.0f;
@@ -22,10 +22,10 @@ public class bullet : MonoBehaviour
     }
     private void Update()
     {
-        timer = timer - Time.deltaTime;
+        timer -= Time.deltaTime;
         if (doActions)
         {
-            myRigidbody2D.AddForce(transform.right * speed * 100);
+            myRigidbody2D.AddForce(100 * speed * transform.right);
             doActions = false;
         }
 

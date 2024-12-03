@@ -176,7 +176,7 @@ public class ProjectileShooter : MonoBehaviour
         (
             "bullet",
             typeof(Rigidbody2D),
-            typeof(bullet),
+            typeof(Bullet),
             typeof(SpriteRenderer),
             typeof(CircleCollider2D)
         );
@@ -191,7 +191,7 @@ public class ProjectileShooter : MonoBehaviour
         //getting The Components Through Code
         SpriteRenderer spriteRenderer = shotBullet.GetComponent<SpriteRenderer>();
         Rigidbody2D bulletRigidbody = shotBullet.GetComponent<Rigidbody2D>();
-        bullet bulletScript = shotBullet.GetComponent<bullet>();
+        Bullet bulletScript = shotBullet.GetComponent<Bullet>();
         CircleCollider2D circleCollider = shotBullet.GetComponent<CircleCollider2D>();
 
         //rigidbody Settings 

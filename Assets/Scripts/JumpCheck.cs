@@ -29,7 +29,9 @@ public class JumpCheck : MonoBehaviour
     {
         if (parentsMovement.jumping == false)
         {
-            parentsMovement.jumpTimes--;
+            Debug.Log("left ground");
+            parentsMovement.coyoteFramesOn = true;
+            parentsMovement.coyoteFrames = parentsMovement.maxCoyoteFrames;
         }
     }
 }

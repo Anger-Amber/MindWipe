@@ -8,12 +8,18 @@ public class Movement : MonoBehaviour
     public float jumpPower = 0.0f;
     public float jumpTimes = 0.0f;
     public float maxJumpTimes = 1.0f;
+    public float maxJumpTimerLimit = 0.5f;
+    public float jumpTimer = 0.5f;
+    public float maxCoyoteFrames = 0.15f;
+    public float coyoteFrames = 0.0f;
 
     //public bools
     public bool jumping = false;
     public bool dashing = false;
     public bool dashHeld = false;
-    
+    public bool jumpTimerOn = false;
+    public bool coyoteFramesOn = false;
+
     //bools
     [SerializeField] bool frictionActive = false;
     [SerializeField] bool dashEndActive = false;
@@ -130,9 +136,10 @@ public class Movement : MonoBehaviour
         }
 
         //When you are falling you aren't jumping
-        if (myRigidbody2D.linearVelocityX < 0)
+        if (myRigidbody2D.linearVelocityY < 0)
         {
             jumpEndActive = false;
+            jumping = false;
         }
 
         //When dashing stuff happens.
@@ -175,13 +182,26 @@ public class Movement : MonoBehaviour
         }
 
         //jumping
-        if (Input.GetKeyDown(KeyCode.Space) && !dashing)
+        if ((Input.GetKeyDown(KeyCode.Space) && !dashing) || (jumpTimer > 0 && !dashing))
         {
+            Debug.Log("jump");
             if (jumpTimes > 0)
             {
+                Debug.Log("jumping with " + coyoteFrames + " coyoteframes");
                 jumping = true;
                 myRigidbody2D.AddForceY(jumpPower);
                 jumpTimes--;
+                jumpTimer = 0;
+                jumpTimerOn = false;
+                coyoteFrames = 0;
+                coyoteFramesOn = false;
+            }
+            else if (jumpTimes <= 0 && jumpTimer <= 0) 
+            {
+                jumpTimerOn = true;
+                jumpTimer = maxJumpTimerLimit;
+                coyoteFramesOn = true;
+                coyoteFrames = maxCoyoteFrames;
             }
         }
 
@@ -189,6 +209,31 @@ public class Movement : MonoBehaviour
         {
             jumpEndActive = true;
             jumping = false;
+        }
+
+        if (jumpTimerOn)
+        {
+            if (jumpTimer > 0)
+            {
+                jumpTimer -= Time.deltaTime;
+            }
+            else
+            {
+                jumpTimerOn = false;
+            }
+        }
+        if (coyoteFramesOn)
+        {
+            if (coyoteFrames > 0)
+            {
+                coyoteFrames -= Time.deltaTime;
+            }
+            else
+            {
+                coyoteFramesOn = false;
+                jumpTimes = 0;
+            }
+
         }
 
         //dashing
