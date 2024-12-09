@@ -184,10 +184,10 @@ public class Movement : MonoBehaviour
         //jumping
         if ((Input.GetKeyDown(KeyCode.Space) && !dashing) || (jumpTimer > 0 && !dashing))
         {
-            Debug.Log("jump");
+            //Debug.Log("jump");
             if (jumpTimes > 0)
             {
-                Debug.Log("jumping with " + coyoteFrames + " coyoteframes");
+                //Debug.Log("jumping with " + coyoteFrames + " coyoteframes");
                 jumping = true;
                 myRigidbody2D.AddForceY(jumpPower);
                 jumpTimes--;

@@ -30,10 +30,17 @@ public class CameraScript : MonoBehaviour
                 playerListLenght++;
             }
         }
-        position /= playerListLenght;
+        if (playerListLenght > 0)
+        {
+            position /= playerListLenght;
+        }
+        else
+        {
+            position = Vector3.zero;
+        }
 
-        float angle = Mathf.Atan2(position.y, position.x) * Mathf.Rad2Deg - 0f;
         myRigidbody2D.linearVelocity = Vector3.zero;
-        myRigidbody2D.AddForce((position - transform.position) * cameraMoveSpeed);
+        //myRigidbody2D.AddForce((position - transform.position) * cameraMoveSpeed);
+        transform.position = Vector2.Lerp(transform.position, position, cameraMoveSpeed);
     }
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5714973529871123144}
   m_Layer: 9
   m_Name: TurretGun
-  m_TagString: Untagged
+  m_TagString: Security
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -252,7 +252,7 @@ CircleCollider2D:
     m_Bits: 384
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 631
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
