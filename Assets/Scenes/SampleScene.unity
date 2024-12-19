@@ -272,6 +272,8 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   playerListLenght: 0
   cameraMoveSpeed: 0.25
+  hitLagTimer: 0
+  hitLagTimerMax: 0.1
 --- !u!50 &175108503
 Rigidbody2D:
   serializedVersion: 5

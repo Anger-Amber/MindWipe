@@ -9,11 +9,29 @@ public class CameraScript : MonoBehaviour
     [SerializeField] Vector3 position;
     [SerializeField] int playerListLenght;
     [SerializeField] float cameraMoveSpeed;
+    [SerializeField] float hitLagTimer;
+    [SerializeField] float hitLagTimerMax;
 
     private void Awake()
     {
         targets = GetComponentInParent<Targetables>();
         myRigidbody2D = GetComponent<Rigidbody2D>();
+    }
+
+    private void Update()
+    {
+        if (Time.timeScale < 1)
+        {
+            if (hitLagTimer > hitLagTimerMax)
+            {
+                Time.timeScale = 1;
+                hitLagTimer = 0;
+            }
+            else
+            {
+                hitLagTimer += Time.deltaTime / Time.timeScale;
+            }
+        }
     }
 
     // Update is called once per frame

@@ -19,6 +19,10 @@ public class Health : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
         if (healthPoints >= 0 && isPlayer)
         {
             scale = healthFill.transform.localScale;
