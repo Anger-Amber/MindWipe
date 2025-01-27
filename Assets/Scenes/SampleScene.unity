@@ -3793,6 +3793,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3620448349336736015, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
+      propertyPath: missile
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7683011178317323927, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
       propertyPath: m_TagString
       value: Untagged

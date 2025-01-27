@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
     public float timer = 1f;
     public bool doActions = false;
     public bool playerBullet = false;
+    public bool missile = false;
 
     [SerializeField] Rigidbody2D myRigidbody2D;
     [SerializeField] CircleCollider2D myCircleCollider2D;
@@ -25,8 +26,15 @@ public class Bullet : MonoBehaviour
         timer -= Time.deltaTime;
         if (doActions)
         {
-            myRigidbody2D.AddForce(100 * speed * transform.right);
-            doActions = false;
+            if (!missile)
+            {
+                myRigidbody2D.AddForce(100 * speed * transform.right);
+                doActions = false;
+            }
+            else
+            {
+                myRigidbody2D.AddForce(1000 * speed * transform.right * Time.deltaTime);
+            }
         }
 
         if (timer < 0)

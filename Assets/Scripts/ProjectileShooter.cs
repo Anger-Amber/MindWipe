@@ -27,6 +27,8 @@ public class ProjectileShooter : MonoBehaviour
         0,
         10,
     };
+
+    // bullet Variables
     [SerializeField] float bulletSpeed = 1f;
     [SerializeField] float bulletDamage = 10f;
     [SerializeField] float bulletGravity = 0f;
@@ -37,6 +39,7 @@ public class ProjectileShooter : MonoBehaviour
 
     [SerializeField] bool isPlayer = false;
     [SerializeField] bool isSecurity = false;
+    [SerializeField] bool missile = false;
 
     [SerializeField] Vector2 targetPosition = new (0,0);
 
@@ -216,6 +219,7 @@ public class ProjectileShooter : MonoBehaviour
         bulletScript.speed = bulletSpeed;
         bulletScript.doActions = true;
         bulletScript.timer = bulletTimer;
+        bulletScript.missile = missile;
     }
 
     // "borrowed" Code
