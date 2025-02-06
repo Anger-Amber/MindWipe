@@ -42,6 +42,7 @@ public class Movement : MonoBehaviour
     [SerializeField] Rigidbody2D myRigidbody2D;
     [SerializeField] Transform myTransform;
     [SerializeField] BoxCollider2D myHitBox2D;
+    public InventoryScript myInventory;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -156,13 +157,13 @@ public class Movement : MonoBehaviour
         //movement
         if (Input.GetKey(KeyCode.D) && !dashing)
         {
-            MovmentSpeed(moveSpeed);
+            MovementSpeed(moveSpeed);
             myTransform.localScale = Vector3.one;
         }
 
         if (Input.GetKey(KeyCode.A) && !dashing)
         {
-            MovmentSpeed(-moveSpeed);
+            MovementSpeed(-moveSpeed);
             myTransform.localScale = new Vector3(-1,1,1);
         }
 
@@ -323,8 +324,18 @@ public class Movement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //Debug.Log("blepp");
+        if (collision.transform.CompareTag("Item") == true)
+        {
+            //Debug.Log("Peck");
+            myInventory.AddToInventory(collision.gameObject, collision.gameObject.GetComponent<ItemScript>().size);
+        }
+    }
+
     //moving
-    void MovmentSpeed(float moveSpeed)
+    void MovementSpeed(float moveSpeed)
     {
         myRigidbody2D.AddForceX(moveSpeed * Time.deltaTime);
     }

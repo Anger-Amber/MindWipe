@@ -7,6 +7,8 @@ TagManager:
   - Ground
   - Security
   - Hunter
+  - Inventory
+  - Item
   layers:
   - Default
   - TransparentFX

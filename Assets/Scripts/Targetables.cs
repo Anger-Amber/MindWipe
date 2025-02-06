@@ -10,6 +10,8 @@ public class Targetables : MonoBehaviour
         
     };
     [SerializeField] int uncompressedListLength;
+    public int itemDropCounterMax;
+    public int itemDropCounter;
 
     void FixedUpdate()
     {

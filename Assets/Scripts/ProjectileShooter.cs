@@ -30,7 +30,8 @@ public class ProjectileShooter : MonoBehaviour
 
     // bullet Variables
     [SerializeField] float bulletSpeed = 1f;
-    [SerializeField] float bulletDamage = 10f;
+    [SerializeField] float originalDamage = 10f;
+    public float damageMultiplier = 1f;
     [SerializeField] float bulletGravity = 0f;
     [SerializeField] float bulletScale = 1f;
     [SerializeField] float bulletTimer = 1f;
@@ -207,15 +208,12 @@ public class ProjectileShooter : MonoBehaviour
         circleCollider.radius = circleCollider.radius * 0.40f;
         circleCollider.isTrigger = true;
 
-        //just for fun, doesn't do shit
-        bulletSprite.transform.position = firePoint.transform.position; 
-
         //settings Of The Bullets
         spriteRenderer.sprite = bulletSprite.sprite;
         spriteRenderer.color = bulletSprite.color;
         spriteRenderer.sortingOrder = 100;
         bulletRigidbody.gravityScale = bulletGravity;
-        bulletScript.damage = bulletDamage;
+        bulletScript.damage = originalDamage * damageMultiplier;
         bulletScript.speed = bulletSpeed;
         bulletScript.doActions = true;
         bulletScript.timer = bulletTimer;

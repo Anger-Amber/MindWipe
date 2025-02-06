@@ -124,111 +124,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myHealthbar: {fileID: 1053542975291307775}
   parentsHealthBar: {fileID: 0}
---- !u!1 &6471367919732387539
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5801473981019770977}
-  - component: {fileID: 787028662611777182}
-  - component: {fileID: 5804552325786169918}
-  - component: {fileID: 2955546613914762429}
-  m_Layer: 6
-  m_Name: Main Camera
-  m_TagString: MainCamera
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5801473981019770977
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6471367919732387539}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 8580265035839370350}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &787028662611777182
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6471367919732387539}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.49685526, g: 0.49685526, b: 0.49685526, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_Iso: 200
-  m_ShutterSpeed: 0.005
-  m_Aperture: 16
-  m_FocusDistance: 10
-  m_FocalLength: 50
-  m_BladeCount: 5
-  m_Curvature: {x: 2, y: 11}
-  m_BarrelClipping: 0.25
-  m_Anamorphism: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 1
-  orthographic size: 10
-  m_Depth: -1
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 0
-  m_HDR: 1
-  m_AllowMSAA: 0
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 0
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
---- !u!81 &5804552325786169918
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6471367919732387539}
-  m_Enabled: 1
---- !u!114 &2955546613914762429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6471367919732387539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19925606838769f4aa614d4fb1c4c52d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7550098935558226152
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +242,8 @@ MonoBehaviour:
   - 0
   - 10
   bulletSpeed: 5
-  bulletDamage: 10
+  originalDamage: 10
+  damageMultiplier: 1
   bulletGravity: 0
   bulletScale: 2
   bulletTimer: 1
@@ -355,6 +251,7 @@ MonoBehaviour:
   time: 0
   isPlayer: 1
   isSecurity: 0
+  missile: 0
   targetPosition: {x: 0, y: 0}
   tempRotation:
     value:
@@ -375,7 +272,7 @@ GameObject:
   - component: {fileID: 4313585140188925339}
   m_Layer: 6
   m_Name: GroundCheck
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -614,7 +511,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5801473981019770977}
   - {fileID: 3597802402214787364}
   - {fileID: 77776727670657690}
   - {fileID: 8336519836249104782}
@@ -764,7 +660,7 @@ MonoBehaviour:
   jumpPower: 0
   jumpTimes: 0
   maxJumpTimes: 1
-  maxJumpTimerLimit: 0.5
+  maxJumpTimerLimit: 0.3
   jumpTimer: 0
   maxCoyoteFrames: 0.15
   coyoteFrames: 0
@@ -788,6 +684,7 @@ MonoBehaviour:
   myRigidbody2D: {fileID: 0}
   myTransform: {fileID: 0}
   myHitBox2D: {fileID: 0}
+  myInventory: {fileID: 0}
 --- !u!114 &1053542975291307775
 MonoBehaviour:
   m_ObjectHideFlags: 0

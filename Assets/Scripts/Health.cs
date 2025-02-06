@@ -29,12 +29,9 @@ public class Health : MonoBehaviour
             scale.x = healthPoints / 10;
             healthFill.transform.localScale = scale;
         }
-        else if (healthPoints == 0)
+        else if (healthPoints == 0 && isPlayer)
         {
-            if (isPlayer)
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            }
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else if (healthPoints < 0)
         {
@@ -46,9 +43,7 @@ public class Health : MonoBehaviour
             else
             {
                 healthPoints = 0;
-                Destroy(gameObject);
             }
         }
-
     }
 }

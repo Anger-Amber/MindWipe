@@ -1,25 +1,65 @@
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class InventoryScript : MonoBehaviour
 {
     [SerializeField] GameObject inventoryInterface;
+    [SerializeField] GameObject player;
+    [SerializeField] Transform slotCategory;
+    [SerializeField] Transform[] largeInventorySlots;
+    [SerializeField] Transform[] smallInventorySlots;
+    [SerializeField] TMPro.TextMeshProUGUI scrapUI;
+    [SerializeField] int scrap;
+    [SerializeField] int amountOfLargeInventorySlots;
+    [SerializeField] int amountOfSmallInventorySlots;
+    [SerializeField] float time;
+    [SerializeField] float damageMultiplier = 1f;
+    [SerializeField] bool inventory;
 
-    private void Start()
+    private void Awake()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+        player.GetComponent<Movement>().myInventory = gameObject.GetComponent<InventoryScript>();
         inventoryInterface = transform.GetChild(0).gameObject;
-    }
+        if (GetComponentInChildren<ForwardingTransforms>(true) != null)
+        {
+            slotCategory = inventoryInterface.transform.GetComponentInChildren<ForwardingTransforms>(true).transform;
+            largeInventorySlots = new Transform[amountOfLargeInventorySlots];
+            smallInventorySlots = new Transform[amountOfSmallInventorySlots];
+            for (int i = 0; i < slotCategory.childCount; i++)
+            {
+                if (i < amountOfLargeInventorySlots)
+                {
+                    largeInventorySlots[i] = slotCategory.GetChild(i);
+                }
+                else
+                {
+                    smallInventorySlots[i - amountOfLargeInventorySlots] = slotCategory.GetChild(i);
+                }
+            }
+        }
 
-    // Update is called once per frame
-    void Update()
+    }
+    private void Update()
     {
-        
+        if (inventory)
+        {
+            time += Time.deltaTime;
+            if (time > 1)
+            {
+                time--;
+                InventoryCheck();
+            }
+        }
+        if (GetComponentInChildren<ForwardingTransforms>(true) != null)
+        {
+            inventory = true;
+            scrapUI = inventoryInterface.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
+        }
     }
-
     private void OnMouseDown()
     {
-        Debug.Log("blep");
-
         if (inventoryInterface != null)
         {
             inventoryInterface.SetActive(!inventoryInterface.activeSelf);
@@ -28,5 +68,98 @@ public class InventoryScript : MonoBehaviour
         {
             Application.Quit();
         }
+    }
+
+    public void AddToInventory(GameObject addedItem, bool size)
+    {
+        if (addedItem.GetComponent<ItemScript>().isScrap == false)
+        {
+            for (int i = 0; i < smallInventorySlots.Length; i++)
+            {
+                if (smallInventorySlots[i].transform.childCount == 0 && size == false)
+                {
+                    //Debug.Log("PECK");
+                    GameObject addedItemClone = new
+                        (
+                        addedItem.name,
+                        typeof(SpriteRenderer),
+                        typeof(ItemScript)
+                        );
+                    addedItemClone.GetComponent<Transform>().position = smallInventorySlots[i].position;
+                    addedItemClone.GetComponent<Transform>().parent = smallInventorySlots[i];
+                    addedItemClone.GetComponent<SpriteRenderer>().sprite = addedItem.GetComponent<SpriteRenderer>().sprite;
+                    addedItemClone.GetComponent<SpriteRenderer>().sortingOrder = 30000;
+                    addedItemClone.GetComponent<ItemScript>().id = addedItem.GetComponent<ItemScript>().id;
+                    addedItemClone.GetComponent<ItemScript>().size = addedItem.GetComponent<ItemScript>().size;
+                    Destroy(addedItem);
+                    break;
+                }
+            }
+            for (int i = 0; i < largeInventorySlots.Length; i++)
+            {
+                if (largeInventorySlots[i].transform.childCount == 0 && size)
+                {
+                    //Debug.Log("PECK");
+                    GameObject addedItemClone = new
+                        (
+                        addedItem.name,
+                        typeof(SpriteRenderer),
+                        typeof(ItemScript)
+                        );
+                    addedItemClone.GetComponent<Transform>().position = largeInventorySlots[i].position;
+                    addedItemClone.GetComponent<Transform>().parent = largeInventorySlots[i];
+                    addedItemClone.GetComponent<SpriteRenderer>().sprite = addedItem.GetComponent<SpriteRenderer>().sprite;
+                    addedItemClone.GetComponent<SpriteRenderer>().sortingOrder = 30000;
+                    addedItemClone.GetComponent<ItemScript>().id = addedItem.GetComponent<ItemScript>().id;
+                    addedItemClone.GetComponent<ItemScript>().size = addedItem.GetComponent<ItemScript>().size;
+                    Destroy(addedItem);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            scrap += addedItem.GetComponent<ItemScript>().id;
+            scrapUI.text = scrap.ToString();
+            Destroy(addedItem);
+        }
+    }
+
+    void InventoryCheck()
+    {
+        damageMultiplier = 1f;
+        Debug.Log(player.transform.GetChild(2));
+        for (int i = 0; i < slotCategory.childCount; i++)
+        {
+            if (i < largeInventorySlots.Length)
+            {
+                if (largeInventorySlots[i].childCount == 1)
+                {
+                    int itemID;
+                    itemID = largeInventorySlots[i].GetChild(0).GetComponent<ItemScript>().id;
+                    switch (itemID)
+                    {
+                        case 0:
+                            damageMultiplier *= 2;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                if (smallInventorySlots[i - largeInventorySlots.Length].childCount == 1)
+                {
+                    int itemID;
+                    itemID = smallInventorySlots[i - largeInventorySlots.Length].GetChild(0).GetComponent<ItemScript>().id;
+                    switch (itemID)
+                    {
+                        case 0:
+                            damageMultiplier *= 2;
+                            break;
+                    }
+                }
+            }
+        }
+        player.transform.GetChild(2).GetComponent<ProjectileShooter>().damageMultiplier = damageMultiplier;
     }
 }
