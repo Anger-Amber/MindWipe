@@ -7,7 +7,9 @@ public class CameraScript : MonoBehaviour
     [SerializeField] Transform[] player;
     [SerializeField] Rigidbody2D myRigidbody2D;
     [SerializeField] Vector3 position;
-    [SerializeField] int playerListLenght;
+    [SerializeField] Vector2 aliveFieldMax;
+    [SerializeField] Vector2 aliveFieldMin;
+    [SerializeField] int playerListLength;
     [SerializeField] float cameraMoveSpeed;
     [SerializeField] float hitLagTimer;
     [SerializeField] float hitLagTimerMax;
@@ -39,18 +41,18 @@ public class CameraScript : MonoBehaviour
     {
         position = Vector3.zero;
         player = targets.playerTransforms;
-        playerListLenght = 0;
+        playerListLength = 0;
         for (int i = 0; i < player.Length; i++)
         {
             if (player[i] != null)
             {
                 position += player[i].transform.position;
-                playerListLenght++;
+                playerListLength++;
             }
         }
-        if (playerListLenght > 0)
+        if (playerListLength > 0)
         {
-            position /= playerListLenght;
+            position /= playerListLength;
         }
         else
         {
@@ -58,7 +60,10 @@ public class CameraScript : MonoBehaviour
         }
 
         myRigidbody2D.linearVelocity = Vector3.zero;
-        //myRigidbody2D.AddForce((position - transform.position) * cameraMoveSpeed);
+        if (position.x < aliveFieldMin.x + transform.parent.position.x) { position.x = aliveFieldMin.x + transform.parent.position.x; }
+        if (position.y < aliveFieldMin.y + transform.parent.position.y) { position.y = aliveFieldMin.y + transform.parent.position.y; }
+        if (position.x > aliveFieldMax.x + transform.parent.position.x) { position.x = aliveFieldMax.x + transform.parent.position.x; }
+        if (position.y > aliveFieldMax.y + transform.parent.position.y) { position.y = aliveFieldMax.y + transform.parent.position.y; }
         transform.position = Vector2.Lerp(transform.position, position, cameraMoveSpeed);
     }
 }

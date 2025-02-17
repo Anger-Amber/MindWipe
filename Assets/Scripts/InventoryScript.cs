@@ -20,10 +20,14 @@ public class InventoryScript : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        player.GetComponent<Movement>().myInventory = gameObject.GetComponent<InventoryScript>();
+        if (player.transform.parent.tag == "Player")
+        {
+            player = player.transform.parent.gameObject;
+        }
         inventoryInterface = transform.GetChild(0).gameObject;
         if (GetComponentInChildren<ForwardingTransforms>(true) != null)
         {
+            player.GetComponent<Movement>().myInventory = gameObject.GetComponent<InventoryScript>();
             slotCategory = inventoryInterface.transform.GetComponentInChildren<ForwardingTransforms>(true).transform;
             largeInventorySlots = new Transform[amountOfLargeInventorySlots];
             smallInventorySlots = new Transform[amountOfSmallInventorySlots];
@@ -128,7 +132,6 @@ public class InventoryScript : MonoBehaviour
     void InventoryCheck()
     {
         damageMultiplier = 1f;
-        Debug.Log(player.transform.GetChild(2));
         for (int i = 0; i < slotCategory.childCount; i++)
         {
             if (i < largeInventorySlots.Length)
