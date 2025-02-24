@@ -242,7 +242,7 @@ MonoBehaviour:
   - 0
   - 10
   bulletSpeed: 5
-  originalDamage: 10
+  originalDamage: 100
   damageMultiplier: 1
   bulletGravity: 0
   bulletScale: 2
@@ -336,7 +336,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.6, y: 0.1}
+  m_Size: {x: 1.55, y: 0.3}
   m_EdgeRadius: 0
 --- !u!114 &4313585140188925339
 MonoBehaviour:
@@ -676,7 +676,7 @@ MonoBehaviour:
   moveSpeed: 10
   maxSpeedX: 15
   maxSpeedY: 50
-  gravity: 3
+  gravity: 6
   dashPower: 0.2
   friction: 1
   maxSpeedXY: {x: 0, y: 0}

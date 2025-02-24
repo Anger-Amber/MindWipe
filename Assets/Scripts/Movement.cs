@@ -137,7 +137,7 @@ public class Movement : MonoBehaviour
         }
 
         //When you are falling you aren't jumping
-        if (myRigidbody2D.linearVelocityY < 0)
+        if (myRigidbody2D.linearVelocityY < jumpTimer - 0.5f)
         {
             jumpEndActive = false;
             jumping = false;
@@ -167,19 +167,19 @@ public class Movement : MonoBehaviour
             myTransform.localScale = new Vector3(-1,1,1);
         }
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            myRigidbody2D.gravityScale = gravity * 3;
-        }
-
-        else if (!Input.GetKey(KeyCode.S) && !jumping)
+        if (!Input.GetKey(KeyCode.S) && !jumping)
         {
             myRigidbody2D.gravityScale = gravity;
         }
 
         else if (!Input.GetKey(KeyCode.S) && jumping)
         {
-            myRigidbody2D.gravityScale = gravity / 2;
+            myRigidbody2D.gravityScale = gravity / 4;
+        }
+
+        else if (Input.GetKey(KeyCode.S))
+        {
+            myRigidbody2D.gravityScale = gravity * 6;
         }
 
         //jumping

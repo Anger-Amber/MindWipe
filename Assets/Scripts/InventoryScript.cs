@@ -24,9 +24,10 @@ public class InventoryScript : MonoBehaviour
         {
             player = player.transform.parent.gameObject;
         }
-        inventoryInterface = transform.GetChild(0).gameObject;
+        
         if (GetComponentInChildren<ForwardingTransforms>(true) != null)
         {
+            inventoryInterface = transform.GetChild(0).gameObject;
             player.GetComponent<Movement>().myInventory = gameObject.GetComponent<InventoryScript>();
             slotCategory = inventoryInterface.transform.GetComponentInChildren<ForwardingTransforms>(true).transform;
             largeInventorySlots = new Transform[amountOfLargeInventorySlots];

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
@@ -32,20 +33,23 @@ public class EnemyBehaviour : MonoBehaviour
         healthPoints = healthScript.healthPoints;
         if (healthPoints <= 0)
         {
-            if (Random.Range(0, parent.itemDropCounter) <= 2)
+            int randomNumber = Random.Range(0, parent.itemDropCounter);
+            if (randomNumber <= 2)
             {
+                itemDropped[randomNumber].gameObject.SetActive(true);
                 specificItemDropped = Instantiate(itemDropped[parent.itemDropCounter], transform.position, 
                     Quaternion.Euler(transform.rotation.x, transform.rotation.y,
                     transform.rotation.z + Random.Range(-45,45)));
                 specificItemDropped.GetComponent<Rigidbody2D>().AddRelativeForceY(1000);
-                if (parent.itemDropCounter == 0)
-                {
-                    parent.itemDropCounter = 7;
-                }
-                else if (parent.itemDropCounter > 0)
-                {
-                    parent.itemDropCounter--;
-                }
+                
+            }
+            if (parent.itemDropCounter == 0)
+            {
+                parent.itemDropCounter = 7;
+            }
+            else if (parent.itemDropCounter > 0)
+            {
+                parent.itemDropCounter--;
             }
             Destroy(gameObject);
         }
