@@ -4,27 +4,48 @@ using UnityEngine.Tilemaps;
 
 public class RoomGeneration : MonoBehaviour
 {
-    [SerializeField] Tilemap tilemap;
+    [SerializeField] Targetables targets;
     [SerializeField] TileBase basicTile;
+    [SerializeField] GameObject roomTrigger;
+    [SerializeField] GameObject newRoomTrigger;
     [SerializeField] BoundsInt newRoomTemplateLocation;
-    [SerializeField] TileBase[] newRoomTiles;
     [SerializeField] Vector3Int offset;
     [SerializeField] Vector3Int tileLocation;
+    [SerializeField] bool enemiesAlive;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        tilemap = transform.GetChild(0).GetComponent<Tilemap>();
+        targets = GameObject.FindGameObjectWithTag("Targetables").GetComponent<Targetables>();
         newRoomTemplateLocation.xMin = -10;
         newRoomTemplateLocation.xMax = 22;
         newRoomTemplateLocation.yMin = -2;
-        newRoomTemplateLocation.yMax = 30;
-        GenerateRoom(tilemap, newRoomTemplateLocation);
+        newRoomTemplateLocation.yMax = 20;
+        GenerateRoom(transform.GetChild(0).GetComponent<Tilemap>(), newRoomTemplateLocation);
+    }
+
+    private void FixedUpdate()
+    {
+        enemiesAlive = false;
+        for (int i = 0; i < targets.compressedShooterList.Length; i++)
+        {
+            if (targets.compressedShooterList[i] != null)
+            {
+                enemiesAlive = true;
+            }
+        }
+        targets.transform.GetChild(0).GetComponent<CameraScript>().isHooked = enemiesAlive;
+        transform.GetChild(3).GetComponent<TilemapCollider2D>().enabled = enemiesAlive;
+        transform.GetChild(3).GetComponent<TilemapRenderer>().enabled = enemiesAlive;
     }
 
     void GenerateRoom(Tilemap tileLayer, BoundsInt roomBounds)
     {
-        Tilemap roomtiles = tilemap.transform.GetChild(0).GetComponent<Tilemap>();
+        Tilemap roomtiles = transform.GetChild(4).GetChild(0).GetComponent<Tilemap>();
+        roomTrigger = transform.GetChild(4).GetChild(0).GetChild(0).gameObject;
+        newRoomTrigger = Instantiate(roomTrigger);
+        newRoomTrigger.transform.position = offset*2 + roomTrigger.transform.position;
+        newRoomTrigger.transform.SetParent(transform.GetChild(3));
         for (int i = 0; i < roomBounds.yMax - roomBounds.yMin; i++)
         {
             for (int c = 0; c < roomBounds.xMax - roomBounds.xMin; c++)
@@ -33,7 +54,6 @@ public class RoomGeneration : MonoBehaviour
                 {
                     tileLayer.SetTile(new Vector3Int(i + roomBounds.xMin + offset.x, c + roomBounds.yMin + offset.y, 0),
                         roomtiles.GetTile(new Vector3Int(i + roomBounds.xMin, c + roomBounds.yMin, 0)));
-                    Debug.Log("check");
                 }
             }
         }

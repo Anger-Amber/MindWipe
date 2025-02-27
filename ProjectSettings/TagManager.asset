@@ -9,6 +9,7 @@ TagManager:
   - Hunter
   - Inventory
   - Item
+  - Targetables
   layers:
   - Default
   - TransparentFX
