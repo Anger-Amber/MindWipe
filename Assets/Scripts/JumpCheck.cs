@@ -19,6 +19,8 @@ public class JumpCheck : MonoBehaviour
     {
         parentsMovement.jumpPower = parentsMovement.jumpHeight;
         parentsMovement.jumpTimes = parentsMovement.maxJumpTimes;
+        parentsMovement.jumping = false;
+        parentsMovement.airborne = false;
         if (parentsMovement.dashHeld == false && parentsMovement.dashing == false)
         {
             parentsMovement.dashHeld = true;
@@ -29,9 +31,9 @@ public class JumpCheck : MonoBehaviour
     {
         if (parentsMovement.jumping == false)
         {
-            //Debug.Log("left ground");
             parentsMovement.coyoteFramesOn = true;
             parentsMovement.coyoteFrames = parentsMovement.maxCoyoteFrames;
         }
+        parentsMovement.airborne = true;
     }
 }

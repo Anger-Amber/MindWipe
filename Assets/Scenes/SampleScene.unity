@@ -42,7 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -226,10 +227,10 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 576
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 439
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -2400,10 +2401,10 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 576
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 439
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -5330,7 +5331,7 @@ GameObject:
   - component: {fileID: 997833782}
   - component: {fileID: 997833781}
   m_Layer: 0
-  m_Name: DR% text (2)
+  m_Name: DR% text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5614,7 +5615,7 @@ GameObject:
   - component: {fileID: 1300219820}
   - component: {fileID: 1300219819}
   m_Layer: 0
-  m_Name: CritDMG text (4)
+  m_Name: CritDMG text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5790,6 +5791,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8818157446272504828, guid: 0c4eeec8b7cce8842a6dca8c321bf762, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5807,7 +5812,7 @@ GameObject:
   - component: {fileID: 1325522745}
   - component: {fileID: 1325522744}
   m_Layer: 0
-  m_Name: Crit text (3)
+  m_Name: Crit text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6036,7 +6041,7 @@ GameObject:
   - component: {fileID: 1396207110}
   - component: {fileID: 1396207109}
   m_Layer: 0
-  m_Name: DMG text (1)
+  m_Name: DMG text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6343,6 +6348,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret
       objectReference: {fileID: 0}
+    - target: {fileID: 8818157446272504828, guid: 0c4eeec8b7cce8842a6dca8c321bf762, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6399,10 +6408,10 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 576
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 439
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -6565,7 +6574,7 @@ TilemapCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -18056,7 +18065,7 @@ TilemapCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -18293,10 +18302,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1018022191}
     m_Modifications:
+    - target: {fileID: 494535442761897527, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 247
+      objectReference: {fileID: 0}
+    - target: {fileID: 494535442761897527, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 768
+      objectReference: {fileID: 0}
+    - target: {fileID: 494535442761897527, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
+      propertyPath: m_CallbackLayers.m_Bits
+      value: 768
+      objectReference: {fileID: 0}
+    - target: {fileID: 494535442761897527, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
+      propertyPath: m_ContactCaptureLayers.m_Bits
+      value: 768
+      objectReference: {fileID: 0}
     - target: {fileID: 1053542975291307775, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
       propertyPath: healthFill
       value: 
       objectReference: {fileID: 1869161485}
+    - target: {fileID: 7683011178317323927, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8580265035839370350, guid: ff26ac8bf3f50b34fa0717c5fdea07bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 41.27

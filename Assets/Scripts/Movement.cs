@@ -1,4 +1,3 @@
-using Unity.Mathematics;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -19,6 +18,7 @@ public class Movement : MonoBehaviour
     public bool dashHeld = false;
     public bool jumpTimerOn = false;
     public bool coyoteFramesOn = false;
+    public bool airborne = false;
 
     //bools
     [SerializeField] bool frictionActive = false;
@@ -42,6 +42,7 @@ public class Movement : MonoBehaviour
     [SerializeField] Rigidbody2D myRigidbody2D;
     [SerializeField] Transform myTransform;
     [SerializeField] BoxCollider2D myHitBox2D;
+    [SerializeField] Animator animator;
     public InventoryScript myInventory;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -49,8 +50,8 @@ public class Movement : MonoBehaviour
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myTransform = GetComponent<Transform>();
-        myHitBox2D = transform.GetChild(1).GetComponent<BoxCollider2D>();
-        moveSpeed = moveSpeed * 1000;
+        myHitBox2D = transform.GetChild(0).GetComponent<BoxCollider2D>();
+        moveSpeed *= 1000;
     }
 
     // Update is called once per frame
@@ -137,7 +138,7 @@ public class Movement : MonoBehaviour
         }
 
         //When you are falling you aren't jumping
-        if (myRigidbody2D.linearVelocityY < jumpTimer - 0.5f)
+        if (myRigidbody2D.linearVelocityY <= (jumpTimer * 10) - 10f)
         {
             jumpEndActive = false;
             jumping = false;
@@ -256,6 +257,23 @@ public class Movement : MonoBehaviour
         if (dashTimer <= 0 && dashing)
         {
             dashEndActive = true;
+        }
+
+        // animations
+        animator.SetBool("Jumping", jumping);
+        animator.SetBool("Airborn", airborne);
+        animator.SetBool("Dashing", dashing);
+        animator.SetBool("DashEnd", dashEndActive);
+        animator.SetBool("Hit(Anger)", false);
+        animator.SetBool("Hit(Sad)", false);
+        animator.SetBool("Hit(Happiness)", false);
+        if ((myRigidbody2D.linearVelocityX < -10 || myRigidbody2D.linearVelocityX > 10) && !dashing && !airborne && !jumping)
+        {
+            animator.SetBool("Running", true);
+        }
+        else
+        {
+            animator.SetBool("Running", false);
         }
     }
 

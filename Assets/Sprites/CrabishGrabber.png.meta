@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CrabishGrabber_0: -7290417420831145817
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
