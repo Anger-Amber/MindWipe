@@ -18,7 +18,6 @@ public class ProjectileShooter : MonoBehaviour
     [SerializeField] SpriteRenderer bulletSprite;
     [SerializeField] CircleCollider2D colliderSettings;
     [SerializeField] Targetables parentsTargetList;
-    [SerializeField] ForwardingTransforms parentsForwardingTransform;
     [SerializeField] Camera cam;
 
     [SerializeField] float[] bulletSpreadAndAmount =
@@ -48,16 +47,16 @@ public class ProjectileShooter : MonoBehaviour
 
     private void Awake()
     {
-        //getting The Bullet Sprite 
+        // Getting the bullet-prefab, firepoint and setting variables
         bulletPrefab = gameObject.transform.GetChild(0).gameObject;
         firePoint = gameObject.transform.GetChild(1).gameObject.transform;
+
         bulletSprite = bulletPrefab.GetComponent<SpriteRenderer>();
         colliderSettings = bulletPrefab.GetComponent<CircleCollider2D>();
         origin = gameObject.transform;
 
-        //getting If You Are A Player Or Not
-        parentsForwardingTransform = GetComponentInParent<ForwardingTransforms>();
-        parentsTransform = parentsForwardingTransform.transform;
+        // Getting if you are a player or not
+        parentsTransform = GetComponentInParent<Transform>();
         cam = Camera.main;
         if (parentsTransform.CompareTag("Player"))
         {
@@ -94,7 +93,7 @@ public class ProjectileShooter : MonoBehaviour
             }
         }
 
-        // temporary Scuff Prority 4
+        // temporary Scuff Priority 4
         // player Looks At The Cursor
         if (isPlayer)
         {
@@ -139,7 +138,7 @@ public class ProjectileShooter : MonoBehaviour
 
         }
 
-        // firing
+        // Capping firerate at the maximum
         if (time < fireRate)
         {
             time += Time.deltaTime;
@@ -149,7 +148,7 @@ public class ProjectileShooter : MonoBehaviour
             time = fireRate;
         }
 
-        // if Not Player
+        // Shooting if not the  player
         if (time >= fireRate && !isPlayer)
         {
             for (int i = 0; i < bulletSpreadAndAmount.Length; i++)
@@ -159,7 +158,7 @@ public class ProjectileShooter : MonoBehaviour
             time -= fireRate;
         }
 
-        // if Player
+        // Shooting if you are the player
         if (time >= fireRate && Input.GetMouseButtonDown(0) && isPlayer)
         {
             for (int i = 0; i < bulletSpreadAndAmount.Length; i++)
@@ -176,6 +175,7 @@ public class ProjectileShooter : MonoBehaviour
         //i Have Sleep Deprivation
         //i Will Probably delete this sometime
         //ha ha fuck you I won't
+        // I'm not going to change the grammar or spelling of these comments, because it's funny
         GameObject shotBullet;
         shotBullet = new GameObject
         (
@@ -220,7 +220,7 @@ public class ProjectileShooter : MonoBehaviour
         bulletScript.missile = missile;
     }
 
-    // "borrowed" Code
+    // Getting the closest enemy through code
     Transform GetClosestEnemy(Transform[] enemies)
     {
         Transform targetMinimum = null;
@@ -233,7 +233,7 @@ public class ProjectileShooter : MonoBehaviour
                 float distance = Vector3.Distance(t.position, currentPos);
                 if (distance < minimumDistance &&
                     t != origin &&
-                    t != parentsForwardingTransform)
+                    t != parentsTransform)
                 {
                     targetMinimum = t;
                     minimumDistance = distance;

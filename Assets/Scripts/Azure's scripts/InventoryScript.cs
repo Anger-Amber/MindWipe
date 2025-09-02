@@ -25,11 +25,11 @@ public class InventoryScript : MonoBehaviour
             player = player.transform.parent.gameObject;
         }
         
-        if (GetComponentInChildren<ForwardingTransforms>(true) != null)
+        if (inventory == true)
         {
             inventoryInterface = transform.GetChild(0).gameObject;
             player.GetComponent<Movement>().myInventory = gameObject.GetComponent<InventoryScript>();
-            slotCategory = inventoryInterface.transform.GetComponentInChildren<ForwardingTransforms>(true).transform;
+            slotCategory = inventoryInterface.transform.GetChild(0);
             largeInventorySlots = new Transform[amountOfLargeInventorySlots];
             smallInventorySlots = new Transform[amountOfSmallInventorySlots];
             for (int i = 0; i < slotCategory.childCount; i++)
@@ -57,9 +57,9 @@ public class InventoryScript : MonoBehaviour
                 InventoryCheck();
             }
         }
-        if (GetComponentInChildren<ForwardingTransforms>(true) != null)
+        if (inventory == true)
         {
-            inventory = true;
+
             scrapUI = inventoryInterface.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
         }
     }
