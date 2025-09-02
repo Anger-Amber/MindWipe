@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,6 +10,7 @@ public class Health : MonoBehaviour
 
     private void Awake()
     {
+        // Changes the script if the object is a player
         if (gameObject.transform.CompareTag("Player"))
         {
             isPlayer = true;
@@ -19,31 +19,22 @@ public class Health : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Restart key
         if (Input.GetKey(KeyCode.Escape))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
+        // Changes the healthbar if the player is alive
         if (healthPoints >= 0 && isPlayer)
         {
             scale = healthFill.transform.localScale;
             scale.x = healthPoints / 10;
             healthFill.transform.localScale = scale;
         }
-        else if (healthPoints == 0 && isPlayer)
+        // Reloads the scene if the player is dead
+        else if (healthPoints <= 0 && isPlayer)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        else if (healthPoints < 0)
-        {
-            if (isPlayer)
-            {
-                healthPoints = 0;
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            }
-            else
-            {
-                healthPoints = 0;
-            }
         }
     }
 }
