@@ -90,14 +90,17 @@ public class CompleteMovement : MonoBehaviour
         }
 
         // Start jumping
-        if (Input.GetKeyDown(KeyCode.Space) && onGround)
+        if (Input.GetKey(KeyCode.Space) && onGround)
         {
             jumpStart = true;
             onGround = false;
+
+            // If on a platform moving down the jump doesn't become shortened
             if (myRigidbody.linearVelocityY < 0)
             {
                 myRigidbody.linearVelocityY = 0;
             }
+
             myRigidbody.linearVelocityY += jumpForce;
 
         }
@@ -121,120 +124,74 @@ public class CompleteMovement : MonoBehaviour
             jumpTime = 0;
         }
 
-        // loop jump if still holding jump
-        if (onGround && Input.GetKey(KeyCode.Space))
-        {
-            onGround = false;
-            if (myRigidbody.linearVelocityY < 0)
-            {
-                myRigidbody.linearVelocityY = 0;
-            }
-            myRigidbody.linearVelocityY += jumpForce;
-
-            jumpTime = 0;
-        }
-
+        // Find what keys are being pressed
         LookDirection = GetLookDirection(lookingRight);
+        // Dash
         if (!dashing && (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && numberOfDashes > 0 )
         {
             dashing = true;
             onGround = false;
             numberOfDashes -= 1;
+
+            //cancel current movement to prepare for dash
+            myRigidbody.linearVelocityX = 0;
+            myRigidbody.linearVelocityY = 0;
+
+            // Change dash direction based on what keys are being pressed
             switch (LookDirection)
             {
+                // right
                 case Vector2 v when v.Equals(Vector2.right):
-                    if (myRigidbody.linearVelocityX < 0)
-                    {
-                        myRigidbody.linearVelocityX = 0;
-                    }
 
                     myRigidbody.linearVelocityX += dashStrength;
                     break;
 
+                //left
                 case Vector2 v when v.Equals(Vector2.left):
-                    if (myRigidbody.linearVelocityX > 0)
-                    {
-                        myRigidbody.linearVelocityX = 0;
-                    }
 
                     myRigidbody.linearVelocityX -= dashStrength;
                     break;
 
+                // up
                 case Vector2 v when v.Equals(Vector2.up):
-                    if (myRigidbody.linearVelocityY < 0)
-                    {
-                        myRigidbody.linearVelocityY = 0;
-                    }
 
                     myRigidbody.linearVelocityY += dashStrength;
                     break;
 
+                //down
                 case Vector2 v when v.Equals(Vector2.down):
-                    if (myRigidbody.linearVelocityY > 0)
-                    {
-                        myRigidbody.linearVelocityY = 0;
-                    }
 
                     myRigidbody.linearVelocityY -= dashStrength;
                     break;
 
+                //right and down
                 case Vector2 v when v.Equals(new Vector2(1, -1)):
-                    if (myRigidbody.linearVelocityX < 0)
-                    {
-                        myRigidbody.linearVelocityX = 0;
-                    }
 
-                    if (myRigidbody.linearVelocityY > 0)
-                    {
-                        myRigidbody.linearVelocityY = 0;
-                    }
-
+                    // trig for circle
                     myRigidbody.linearVelocityX += dashStrength * Mathf.Sqrt(2) / 2;
                     myRigidbody.linearVelocityY -= dashStrength * Mathf.Sqrt(2) / 2;
                     break;
 
+                // right and up
                 case Vector2 v when v.Equals(Vector2.one):
-                    if (myRigidbody.linearVelocityX < 0)
-                    {
-                        myRigidbody.linearVelocityX = 0;
-                    }
 
-                    if (myRigidbody.linearVelocityY < 0)
-                    {
-                        myRigidbody.linearVelocityY = 0;
-                    }
-
+                    // trig for circle
                     myRigidbody.linearVelocityX += dashStrength * Mathf.Sqrt(2) / 2;
                     myRigidbody.linearVelocityY += dashStrength * Mathf.Sqrt(2) / 2;
                     break;
 
+                //left and down
                 case Vector2 v when v.Equals(new Vector2(-1, -1)):
-                    if (myRigidbody.linearVelocityX > 0)
-                    {
-                        myRigidbody.linearVelocityX = 0;
-                    }
 
-                    if (myRigidbody.linearVelocityY > 0)
-                    {
-                        myRigidbody.linearVelocityY = 0;
-                    }
-
+                    // trig for circle
                     myRigidbody.linearVelocityX -= dashStrength * Mathf.Sqrt(2) / 2;
                     myRigidbody.linearVelocityY -= dashStrength * Mathf.Sqrt(2) / 2;
                     break;
 
+                //left and up
                 case Vector2 v when v.Equals(new Vector2(-1, 1)):
 
-                    if (myRigidbody.linearVelocityX > 0)
-                    {
-                        myRigidbody.linearVelocityX = 0;
-                    }
-
-                    if (myRigidbody.linearVelocityY < 0)
-                    {
-                        myRigidbody.linearVelocityY = 0;
-                    }
-
+                    // trig for circle
                     myRigidbody.linearVelocityX -= dashStrength * Mathf.Sqrt(2) / 2;
                     myRigidbody.linearVelocityY += dashStrength * Mathf.Sqrt(2) / 2;
                     break;
@@ -246,8 +203,10 @@ public class CompleteMovement : MonoBehaviour
             dashTime += Time.deltaTime;
         }
 
+        // dash timer
         if (dashTime >= dashEnd)
         {
+            // decelerate depending on direction moving
             switch (myRigidbody.linearVelocityX)
             {
                 case < 0:
@@ -268,7 +227,15 @@ public class CompleteMovement : MonoBehaviour
                     break;
             }
 
-            if (Mathf.Abs(myRigidbody.linearVelocityY) <= 1 && Mathf.Abs(myRigidbody.linearVelocityX) <= 1)
+            // End deceleration when slow
+            if (Mathf.Abs(myRigidbody.linearVelocityY) <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= 0.2)
+            {
+                dashTime = 0;
+                dashing = false;
+            }
+
+            // Smoothness when trying to move after dash
+            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Mathf.Abs(myRigidbody.linearVelocityY) <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= movementSpeedCap)
             {
                 dashTime = 0;
                 dashing = false;
@@ -277,7 +244,10 @@ public class CompleteMovement : MonoBehaviour
     }
     Vector2 GetLookDirection(bool right)
     {
+        // reset
         Vector2 lookDirection = Vector2.zero;
+
+        // Default depending on last pressed a/d key
         if (right)
         {
             if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)))
@@ -292,30 +262,37 @@ public class CompleteMovement : MonoBehaviour
                 lookDirection.x -= 1;
             }
         }
+        // left
         if (Input.GetKey(KeyCode.A))
         {
             lookDirection.x -= 1;
+            // can't turn around in air so make stronger to cancel the facing direction
             if (!onGround)
             {
                 lookDirection.x -= 1;
             }
         }
+        // right
         if (Input.GetKey(KeyCode.D))
         {
             lookDirection.x += 1;
+            // can't turn around in air so make stronger to cancel the facing direction
             if (!onGround)
             {
                 lookDirection.x += 1;
             }
         }
+        // up
         if (Input.GetKey(KeyCode.W))
         {
             lookDirection.y += 1;
         }
+        // down
         if (Input.GetKey(KeyCode.S))
         {
             lookDirection.y -= 1;
         }
+        // Keep max value at 1 or -1
         if (lookDirection.x > 1)
         {
             lookDirection.x = 1;
