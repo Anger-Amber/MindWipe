@@ -1,8 +1,13 @@
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CompleteMovement : MonoBehaviour
 {
+    [Header("Collision")]
+    
+    Rigidbody2D myRigidbody;
+
+    [SerializeField] ContactFilter2D[] contactFilters;
+
     [Header("Standard movement")]
 
     [SerializeField] float stopSpeed = 80;
@@ -10,7 +15,6 @@ public class CompleteMovement : MonoBehaviour
     public float movementSpeed;
     public float movementSpeedCap = 4;
 
-    Rigidbody2D myRigidbody;
 
     [Header("Jumping")]
 
@@ -48,11 +52,20 @@ public class CompleteMovement : MonoBehaviour
 
     void Awake()
     {
+        for (int i = 0; i < 3; i++)
+        {
+            contactFilters[i].useNormalAngle = true;
+            contactFilters[i].minNormalAngle = 90 * i - 45;
+            contactFilters[i].maxNormalAngle = 90 * i + 45;
+        }
+        
         myRigidbody = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
+        DoCollision();
+
         Dash();
 
         StandardMovement();
@@ -123,6 +136,12 @@ public class CompleteMovement : MonoBehaviour
         return lookDirection;
     }
 
+    void DoCollision()
+    {
+        onGround = myRigidbody.IsTouching(contactFilters[1]);
+        onWallL = myRigidbody.IsTouching(contactFilters[0]);
+        onWallR = myRigidbody.IsTouching(contactFilters[2]);
+    }
     void StandardMovement()
     {
         // Move left
@@ -171,7 +190,7 @@ public class CompleteMovement : MonoBehaviour
     void Jumping()
     {
         // Start jumping
-        if (Input.GetKey(KeyCode.Space) && onGround)
+        if (Input.GetKey(KeyCode.Space) && onGround && !jumpStart)
         {
             jumpStart = true;
             onGround = false;
@@ -183,7 +202,6 @@ public class CompleteMovement : MonoBehaviour
             }
 
             myRigidbody.linearVelocityY += jumpForce;
-
         }
 
         // Timing the jump
@@ -202,6 +220,13 @@ public class CompleteMovement : MonoBehaviour
                 myRigidbody.linearVelocityY -= jumpForce * (0.63f - jumpTime * 1.33f);
             }
 
+            jumpTime = 0;
+        }
+
+        // Not jumping anymore if moving downwards
+        if (myRigidbody.linearVelocityY < 0)
+        {
+            jumpStart = false;
             jumpTime = 0;
         }
     }
