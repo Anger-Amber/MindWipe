@@ -1,10 +1,11 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CompleteMovement : MonoBehaviour
 {
     [Header("Standard movement")]
 
-    [SerializeField] float stopSpeed;
+    [SerializeField] float stopSpeed = 80;
 
     public float movementSpeed;
     public float movementSpeedCap = 4;
@@ -20,6 +21,15 @@ public class CompleteMovement : MonoBehaviour
     float jumpTime;
 
     bool jumpStart;
+
+    [Header("Wall jump")]
+
+    [SerializeField] float jumpForceWallVerti;
+    [SerializeField] float jumpForceWallHori;
+
+    public bool onWallR;
+    public bool onWallL;
+
 
     [Header("Dash")]
 
@@ -43,12 +53,78 @@ public class CompleteMovement : MonoBehaviour
 
     void Update()
     {
-        // Regain dashes
-        if (onGround && numberOfDashes == 0)
-        {
-            numberOfDashes = maxDashes;
-        }
+        Dash();
 
+        StandardMovement();
+
+        WallJump();
+
+        Jumping();
+    }
+    Vector2 GetLookDirection(bool right)
+    {
+        // reset
+        Vector2 lookDirection = Vector2.zero;
+
+        // Default depending on last pressed a/d key
+        if (right)
+        {
+            if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)))
+            {
+                lookDirection.x += 1;
+            }
+        }
+        else
+        {
+            if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)))
+            {
+                lookDirection.x -= 1;
+            }
+        }
+        // left
+        if (Input.GetKey(KeyCode.A))
+        {
+            lookDirection.x -= 1;
+            // can't turn around in air so make stronger to cancel the facing direction
+            if (!onGround)
+            {
+                lookDirection.x -= 1;
+            }
+        }
+        // right
+        if (Input.GetKey(KeyCode.D))
+        {
+            lookDirection.x += 1;
+            // can't turn around in air so make stronger to cancel the facing direction
+            if (!onGround)
+            {
+                lookDirection.x += 1;
+            }
+        }
+        // up
+        if (Input.GetKey(KeyCode.W))
+        {
+            lookDirection.y += 1;
+        }
+        // down
+        if (Input.GetKey(KeyCode.S))
+        {
+            lookDirection.y -= 1;
+        }
+        // Keep max value at 1 or -1
+        if (lookDirection.x > 1)
+        {
+            lookDirection.x = 1;
+        }
+        if (lookDirection.x < -1)
+        {
+            lookDirection.x = -1;
+        }
+        return lookDirection;
+    }
+
+    void StandardMovement()
+    {
         // Move left
         if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && myRigidbody.linearVelocityX >= -movementSpeedCap)
         {
@@ -77,18 +153,23 @@ public class CompleteMovement : MonoBehaviour
         if ((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D)))
         {
 
-            switch (myRigidbody.linearVelocityX)
+            if (myRigidbody.linearVelocityX < -stopSpeed * Time.deltaTime)
             {
-                case < 0:
-                    myRigidbody.linearVelocityX += stopSpeed * Time.deltaTime;
-                    break;
-
-                case > 0:
-                    myRigidbody.linearVelocityX -= stopSpeed * Time.deltaTime;
-                    break;
+                myRigidbody.linearVelocityX += stopSpeed * Time.deltaTime;
             }
+            else if (myRigidbody.linearVelocityX > stopSpeed * Time.deltaTime)
+            {
+                myRigidbody.linearVelocityX -= stopSpeed * Time.deltaTime;
+            }
+            else
+            {
+                myRigidbody.linearVelocityX = 0;
+            }
+            
         }
-
+    }
+    void Jumping()
+    {
         // Start jumping
         if (Input.GetKey(KeyCode.Space) && onGround)
         {
@@ -123,11 +204,36 @@ public class CompleteMovement : MonoBehaviour
 
             jumpTime = 0;
         }
+    }
+    void WallJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && !onGround)
+        {
+            if (onWallR) 
+            {
+                myRigidbody.linearVelocityY = jumpForceWallVerti;
+                myRigidbody.linearVelocityX = -jumpForceWallHori;
+            }
+
+            if (onWallL)
+            {
+                myRigidbody.linearVelocityY = jumpForceWallVerti;
+                myRigidbody.linearVelocityX = jumpForceWallHori;
+            }
+        }
+    }
+    void Dash()
+    {
+        // Regain dashes
+        if (onGround && numberOfDashes == 0)
+        {
+            numberOfDashes = maxDashes;
+        }
 
         // Find what keys are being pressed
         LookDirection = GetLookDirection(lookingRight);
         // Dash
-        if (!dashing && (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && numberOfDashes > 0 )
+        if (!dashing && (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && numberOfDashes > 0)
         {
             dashing = true;
             onGround = false;
@@ -241,66 +347,5 @@ public class CompleteMovement : MonoBehaviour
                 dashing = false;
             }
         }
-    }
-    Vector2 GetLookDirection(bool right)
-    {
-        // reset
-        Vector2 lookDirection = Vector2.zero;
-
-        // Default depending on last pressed a/d key
-        if (right)
-        {
-            if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)))
-            {
-                lookDirection.x += 1;
-            }
-        }
-        else
-        {
-            if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)))
-            {
-                lookDirection.x -= 1;
-            }
-        }
-        // left
-        if (Input.GetKey(KeyCode.A))
-        {
-            lookDirection.x -= 1;
-            // can't turn around in air so make stronger to cancel the facing direction
-            if (!onGround)
-            {
-                lookDirection.x -= 1;
-            }
-        }
-        // right
-        if (Input.GetKey(KeyCode.D))
-        {
-            lookDirection.x += 1;
-            // can't turn around in air so make stronger to cancel the facing direction
-            if (!onGround)
-            {
-                lookDirection.x += 1;
-            }
-        }
-        // up
-        if (Input.GetKey(KeyCode.W))
-        {
-            lookDirection.y += 1;
-        }
-        // down
-        if (Input.GetKey(KeyCode.S))
-        {
-            lookDirection.y -= 1;
-        }
-        // Keep max value at 1 or -1
-        if (lookDirection.x > 1)
-        {
-            lookDirection.x = 1;
-        }
-        if (lookDirection.x < -1)
-        {
-            lookDirection.x = -1;
-        }
-        return lookDirection;
     }
 }

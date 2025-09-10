@@ -131,9 +131,9 @@ GameObject:
   - component: {fileID: 276516554}
   - component: {fileID: 276516553}
   - component: {fileID: 276516552}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -453,6 +453,7 @@ GameObject:
   m_Component:
   - component: {fileID: 641102001}
   - component: {fileID: 641102002}
+  - component: {fileID: 641102003}
   m_Layer: 6
   m_Name: wallCheckR
   m_TagString: Untagged
@@ -521,6 +522,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.15, y: 0.8}
   m_EdgeRadius: 0
+--- !u!114 &641102003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641102000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d89bdda87c9f38a45a8c52ad91290395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightCollider: 1
 --- !u!1 &668272832
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,6 +810,10 @@ MonoBehaviour:
   movementSpeedCap: 10
   jumpForce: 15
   onGround: 0
+  jumpForceWallVerti: 15
+  jumpForceWallHori: 18
+  onWallR: 0
+  onWallL: 0
   dashStrength: 30
   dashStopSpeed: 160
   dashEnd: 0.2
@@ -921,6 +939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1799505801}
   - component: {fileID: 1799505802}
+  - component: {fileID: 1799505803}
   m_Layer: 6
   m_Name: wallCheckL
   m_TagString: Untagged
@@ -989,6 +1008,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.15, y: 0.8}
   m_EdgeRadius: 0
+--- !u!114 &1799505803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799505800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d89bdda87c9f38a45a8c52ad91290395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightCollider: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
