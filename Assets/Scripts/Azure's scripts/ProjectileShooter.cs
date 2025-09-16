@@ -53,7 +53,7 @@ public class ProjectileShooter : MonoBehaviour
         origin = gameObject.transform;
 
         // Getting if you are a player or not
-        parentsTransform = GetComponentInParent<Transform>();
+        parentsTransform = transform.parent.transform;
         cam = Camera.main;
         if (parentsTransform.CompareTag("Player"))
         {

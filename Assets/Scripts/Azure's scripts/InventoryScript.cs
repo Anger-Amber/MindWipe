@@ -9,6 +9,7 @@ public class InventoryScript : MonoBehaviour
     [SerializeField] Transform[] largeInventorySlots;
     [SerializeField] Transform[] smallInventorySlots;
     [SerializeField] TMPro.TextMeshProUGUI scrapUI;
+    [SerializeField] TMPro.TextMeshProUGUI DMGUI;
     [SerializeField] int scrap;
     [SerializeField] int amountOfLargeInventorySlots;
     [SerializeField] int amountOfSmallInventorySlots;
@@ -60,6 +61,7 @@ public class InventoryScript : MonoBehaviour
         {
 
             scrapUI = inventoryInterface.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
+            DMGUI = inventoryInterface.transform.GetChild(1).GetChild(2).GetComponent<TextMeshProUGUI>();
         }
     }
     private void OnMouseDown()
@@ -164,5 +166,6 @@ public class InventoryScript : MonoBehaviour
             }
         }
         player.transform.GetChild(2).GetComponent<ProjectileShooter>().damageMultiplier = damageMultiplier;
+        DMGUI.text = damageMultiplier.ToString();
     }
 }
