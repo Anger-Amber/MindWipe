@@ -84,7 +84,6 @@ public class InventoryScript : MonoBehaviour
             {
                 if (smallInventorySlots[i].transform.childCount == 0 && size == false)
                 {
-                    //Debug.Log("PECK");
                     GameObject addedItemClone = new
                         (
                         addedItem.name,
@@ -105,7 +104,6 @@ public class InventoryScript : MonoBehaviour
             {
                 if (largeInventorySlots[i].transform.childCount == 0 && size)
                 {
-                    //Debug.Log("PECK");
                     GameObject addedItemClone = new
                         (
                         addedItem.name,
