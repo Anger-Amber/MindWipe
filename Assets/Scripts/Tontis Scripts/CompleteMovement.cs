@@ -20,7 +20,7 @@ public class CompleteMovement : MonoBehaviour
 
     [SerializeField] float jumpForce;
 
-    public bool onGround;
+    bool onGround;
 
     float jumpTime;
 
@@ -31,8 +31,10 @@ public class CompleteMovement : MonoBehaviour
     [SerializeField] float jumpForceWallVerti;
     [SerializeField] float jumpForceWallHori;
 
-    public bool onWallR;
-    public bool onWallL;
+    bool onWallR;
+    bool leftWallR;
+    bool onWallL;
+    bool leftWallL;
 
 
     [Header("Dash")]
@@ -74,6 +76,7 @@ public class CompleteMovement : MonoBehaviour
 
         Jumping();
     }
+
     Vector2 GetLookDirection(bool right)
     {
         // reset
@@ -238,12 +241,27 @@ public class CompleteMovement : MonoBehaviour
             {
                 myRigidbody.linearVelocityY = jumpForceWallVerti;
                 myRigidbody.linearVelocityX = -jumpForceWallHori;
+                leftWallR = true;
             }
 
             if (onWallL)
             {
                 myRigidbody.linearVelocityY = jumpForceWallVerti;
                 myRigidbody.linearVelocityX = jumpForceWallHori;
+                leftWallL = true;
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            if (leftWallR)
+            {
+                leftWallR = false;
+            }
+
+            if (leftWallL)
+            {
+                leftWallL = false;
             }
         }
     }
