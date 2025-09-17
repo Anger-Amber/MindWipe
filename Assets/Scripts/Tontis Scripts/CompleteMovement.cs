@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 
 public class CompleteMovement : MonoBehaviour
@@ -19,6 +20,8 @@ public class CompleteMovement : MonoBehaviour
     [Header("Jumping")]
 
     [SerializeField] float jumpForce;
+    [SerializeField] float jumpDecreaseStart = 0.63f;
+    [SerializeField] float jumpDecreaseTimeMulti = 1.33f;
 
     bool onGround;
 
@@ -30,12 +33,15 @@ public class CompleteMovement : MonoBehaviour
 
     [SerializeField] float jumpForceWallVerti;
     [SerializeField] float jumpForceWallHori;
+    [SerializeField] float jumpDecreaseStartWall = 0.25f;
+    [SerializeField] float jumpDecreaseTimeMultiWall = 0.5f;
 
-    bool onWallR;
+    float jumpTimeWall;
+
     bool leftWallR;
-    bool onWallL;
     bool leftWallL;
-
+    bool onWallR;
+    bool onWallL;
 
     [Header("Dash")]
 
@@ -172,9 +178,8 @@ public class CompleteMovement : MonoBehaviour
         }
 
         // Deceleration if not going left or right
-        if ((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D)))
+        if (((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) && !(leftWallL || leftWallR))
         {
-
             if (myRigidbody.linearVelocityX < -stopSpeed * Time.deltaTime)
             {
                 myRigidbody.linearVelocityX += stopSpeed * Time.deltaTime;
@@ -187,7 +192,6 @@ public class CompleteMovement : MonoBehaviour
             {
                 myRigidbody.linearVelocityX = 0;
             }
-            
         }
     }
     void Jumping()
@@ -218,9 +222,9 @@ public class CompleteMovement : MonoBehaviour
         {
             jumpStart = false;
 
-            if (0.63f - jumpTime * 1.33f > 0)
+            if (jumpDecreaseStart - jumpTime * jumpDecreaseTimeMulti > 0)
             {
-                myRigidbody.linearVelocityY -= jumpForce * (0.63f - jumpTime * 1.33f);
+                myRigidbody.linearVelocityY -= jumpForce * (jumpDecreaseStart - jumpTime * jumpDecreaseTimeMulti);
             }
 
             jumpTime = 0;
@@ -252,17 +256,50 @@ public class CompleteMovement : MonoBehaviour
             }
         }
 
+        if (leftWallL || leftWallR)
+        {
+            jumpTimeWall += Time.deltaTime;
+        }
+
+        if (leftWallL)
+        {
+            myRigidbody.linearVelocityX -= myRigidbody.gravityScale * 9.82f * Time.deltaTime;
+        }
+        if (leftWallR)
+        {
+            myRigidbody.linearVelocityX += myRigidbody.gravityScale * 9.82f * Time.deltaTime;
+        }
+
         if (Input.GetKeyUp(KeyCode.Space))
         {
             if (leftWallR)
             {
+                if (jumpDecreaseStartWall - jumpTimeWall * jumpDecreaseTimeMultiWall > 0)
+                {
+                    myRigidbody.linearVelocityY -= jumpForceWallVerti * (jumpDecreaseStartWall - jumpTimeWall * jumpDecreaseTimeMultiWall);
+                    myRigidbody.linearVelocityX += jumpForceWallHori * (jumpDecreaseStartWall - jumpTimeWall * jumpDecreaseTimeMultiWall);
+                }
                 leftWallR = false;
+                jumpTimeWall = 0;
             }
 
             if (leftWallL)
             {
+                if (jumpDecreaseStartWall - jumpTimeWall * jumpDecreaseTimeMultiWall > 0)
+                {
+                    myRigidbody.linearVelocityY -= jumpForceWallVerti * (jumpDecreaseStartWall - jumpTimeWall * jumpDecreaseTimeMultiWall);
+                    myRigidbody.linearVelocityX -= jumpForceWallHori * (jumpDecreaseStartWall - jumpTimeWall * jumpDecreaseTimeMultiWall);
+                }
                 leftWallL = false;
+                jumpTimeWall = 0;
             }
+        }
+
+        if (myRigidbody.linearVelocityY < 0)
+        {
+            leftWallL = false;
+            leftWallR = false;
+            jumpTimeWall = 0;
         }
     }
     void Dash()

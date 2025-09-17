@@ -662,11 +662,12 @@ MonoBehaviour:
   movementSpeed: 40
   movementSpeedCap: 10
   jumpForce: 15
-  onGround: 0
+  jumpDecreaseStart: 0.63
+  jumpDecreaseTimeMulti: 1.33
   jumpForceWallVerti: 15
-  jumpForceWallHori: 18
-  onWallR: 0
-  onWallL: 0
+  jumpForceWallHori: 15
+  jumpDecreaseStartWall: 0.25
+  jumpDecreaseTimeMultiWall: 0.5
   dashStrength: 30
   dashStopSpeed: 160
   dashEnd: 0.2
