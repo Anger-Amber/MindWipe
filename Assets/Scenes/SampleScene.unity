@@ -687,6 +687,7 @@ MonoBehaviour:
   time: 0
   damageMultiplier: 1
   inventory: 0
+  pickedUpItem: {fileID: 0}
 --- !u!61 &88841041
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1395,7 +1396,7 @@ Transform:
   m_GameObject: {fileID: 436819675}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1405,6 +1406,7 @@ Transform:
   - {fileID: 112650111}
   - {fileID: 1602690272}
   - {fileID: 1913447032}
+  - {fileID: 1252236209}
   - {fileID: 728645850}
   - {fileID: 877870768}
   - {fileID: 2129522943}
@@ -3414,6 +3416,7 @@ MonoBehaviour:
   time: 0
   damageMultiplier: 1
   inventory: 0
+  pickedUpItem: {fileID: 0}
 --- !u!61 &939032199
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6532,31 +6535,31 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 436819676}
     m_Modifications:
     - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.9850411
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.9850411
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.9850411
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.802942
+      value: 6.90635
       objectReference: {fileID: 0}
     - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.139544
+      value: 4.71
       objectReference: {fileID: 0}
     - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.655754
+      value: -0.02552104
       objectReference: {fileID: 0}
     - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6586,6 +6589,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4302378650491879189, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: m_Name
       value: Small Slot Hitbox (1)
@@ -6593,12 +6600,17 @@ PrefabInstance:
     - target: {fileID: 8143914365888172855, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
       propertyPath: parent
       value: 
-      objectReference: {fileID: 259648061}
+      objectReference: {fileID: 1845759525}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
+--- !u!4 &1252236209 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1250526133529254253, guid: 0a1b713877c6eda4f88c82d35b141187, type: 3}
+  m_PrefabInstance: {fileID: 1252236208}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1278432634 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8424937128931745623, guid: 3ed9ae59339c2b14d9a657810bee2218, type: 3}
@@ -12093,6 +12105,7 @@ MonoBehaviour:
   time: 0
   damageMultiplier: 1
   inventory: 1
+  pickedUpItem: {fileID: 0}
 --- !u!61 &1845759529
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18970,7 +18983,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
@@ -19820,7 +19833,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1717335348}
-  - {fileID: 1252236208}
   - {fileID: 86793653}
   - {fileID: 475680707}
   - {fileID: 1018022191}

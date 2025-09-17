@@ -16,6 +16,7 @@ public class InventoryScript : MonoBehaviour
     [SerializeField] float time;
     [SerializeField] float damageMultiplier = 1f;
     [SerializeField] bool inventory;
+    public GameObject pickedUpItem;
 
     private void Awake()
     {
@@ -62,6 +63,11 @@ public class InventoryScript : MonoBehaviour
 
             scrapUI = inventoryInterface.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
             DMGUI = inventoryInterface.transform.GetChild(1).GetChild(2).GetComponent<TextMeshProUGUI>();
+        }
+        if (pickedUpItem != null)
+        {
+            pickedUpItem.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pickedUpItem.transform.position = new Vector3(pickedUpItem.transform.position.x, pickedUpItem.transform.position.y, 0);
         }
     }
     private void OnMouseDown()

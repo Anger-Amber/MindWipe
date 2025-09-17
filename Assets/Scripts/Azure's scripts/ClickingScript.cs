@@ -17,21 +17,24 @@ public class ClickingScript : MonoBehaviour
     }
     private void Update()
     {
-        while (pickedUpItem != null)
-        {
-            pickedUpItem.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
+
     }
     private void OnMouseOver()
     {
-        Debug.Log("Peck");
+        
     }
     private void OnMouseDown()
     {
-        Debug.Log("Peck");
-        if (transform.childCount > 0)
+        if (transform.childCount > 0 && !(parent.GetComponent<InventoryScript>().pickedUpItem == transform.GetChild(0).gameObject))
         {
-            pickedUpItem = transform.GetChild(0).gameObject;
+            parent.GetComponent<InventoryScript>().pickedUpItem = transform.GetChild(0).gameObject;
+        }
+        else if ((transform.childCount == 0 && parent.GetComponent<InventoryScript>().pickedUpItem != null) || (transform.childCount == 1 && parent.GetComponent<InventoryScript>().pickedUpItem == transform.GetChild(0).gameObject))
+        {
+            pickedUpItem = parent.GetComponent<InventoryScript>().pickedUpItem;
+            pickedUpItem.transform.parent = transform;
+            pickedUpItem.transform.localPosition = Vector3.zero;
+            parent.GetComponent<InventoryScript>().pickedUpItem = null;
         }
     }
 }
