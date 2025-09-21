@@ -67,7 +67,7 @@ public class InventoryScript : MonoBehaviour
         if (pickedUpItem != null)
         {
             pickedUpItem.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pickedUpItem.transform.position = new Vector3(pickedUpItem.transform.position.x, pickedUpItem.transform.position.y, 0);
+            pickedUpItem.transform.position = new Vector3(pickedUpItem.transform.position.x, pickedUpItem.transform.position.y, -11f);
         }
     }
     private void OnMouseDown()
