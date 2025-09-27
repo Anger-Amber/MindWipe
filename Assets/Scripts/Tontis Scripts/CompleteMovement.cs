@@ -13,13 +13,13 @@ public class CompleteMovement : MonoBehaviour
 
     [SerializeField] float stopSpeed = 80;
 
-    public float movementSpeed;
-    public float movementSpeedCap = 4;
+    public float movementSpeed = 40;
+    public float movementSpeedCap = 10;
 
 
     [Header("Jumping")]
 
-    [SerializeField] float jumpForce;
+    [SerializeField] float jumpForce = 15;
     [SerializeField] float jumpDecreaseStart = 0.63f;
     [SerializeField] float jumpDecreaseTimeMulti = 1.33f;
 
@@ -31,8 +31,8 @@ public class CompleteMovement : MonoBehaviour
 
     [Header("Wall jump")]
 
-    [SerializeField] float jumpForceWallVerti;
-    [SerializeField] float jumpForceWallHori;
+    [SerializeField] float jumpForceWallVerti = 15;
+    [SerializeField] float jumpForceWallHori = 15;
     [SerializeField] float jumpDecreaseStartWall = 0.25f;
     [SerializeField] float jumpDecreaseTimeMultiWall = 0.5f;
 
@@ -45,9 +45,9 @@ public class CompleteMovement : MonoBehaviour
 
     [Header("Dash")]
 
-    [SerializeField] float dashStrength = 200;
-    [SerializeField] float dashStopSpeed;
-    [SerializeField] float dashEnd;
+    [SerializeField] float dashStrength = 30;
+    [SerializeField] float dashStopSpeed = 160;
+    [SerializeField] float dashEnd = 0.2f;
     [SerializeField] Vector2 LookDirection;
     [SerializeField] bool lookingRight = true;
 
@@ -154,7 +154,7 @@ public class CompleteMovement : MonoBehaviour
     void StandardMovement()
     {
         // Move left
-        if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && myRigidbody.linearVelocityX >= -movementSpeedCap)
+        if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && myRigidbody.linearVelocityX > -movementSpeedCap)
         {
             // turn around if not in air
             if (onGround)
@@ -166,7 +166,7 @@ public class CompleteMovement : MonoBehaviour
         }
 
         // Move right
-        if (Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A) && myRigidbody.linearVelocityX <= movementSpeedCap)
+        if (Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A) && myRigidbody.linearVelocityX < movementSpeedCap)
         {
             // turn around if not in air
             if (onGround)
@@ -178,7 +178,7 @@ public class CompleteMovement : MonoBehaviour
         }
 
         // Deceleration if not going left or right
-        if (((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) && !(leftWallL || leftWallR))
+        if ((((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) && !(leftWallL || leftWallR)) || (onGround && Mathf.Abs(myRigidbody.linearVelocityX) > movementSpeedCap ))
         {
             if (myRigidbody.linearVelocityX < -stopSpeed * Time.deltaTime)
             {
@@ -387,6 +387,12 @@ public class CompleteMovement : MonoBehaviour
         if (dashing)
         {
             dashTime += Time.deltaTime;
+        }
+
+        if (dashing && onGround && Input.GetKeyDown(KeyCode.Space))
+        {
+            dashing = false;
+            dashTime = 0;
         }
 
         // dash timer
