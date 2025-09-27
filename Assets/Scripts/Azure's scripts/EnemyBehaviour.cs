@@ -5,6 +5,9 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] Health healthScript;
     [SerializeField] Targetables parent;
     [SerializeField] bool isMobile = false;
+    [SerializeField] bool isUnkillable;
+    [SerializeField] bool isInteractable;
+    [SerializeField] bool isShop;
     [SerializeField] float maxHealthPoints;
     [SerializeField] float healthPoints;
 
@@ -20,10 +23,13 @@ public class EnemyBehaviour : MonoBehaviour
         healthScript = GetComponent<Health>();
         parent = transform.parent.GetComponent<Targetables>();
         healthScript.healthPoints = maxHealthPoints;
-        itemDropped = new GameObject[transform.childCount + 3];
-        itemDropped[0] = transform.GetChild(0).gameObject;
-        itemDropped[1] = transform.GetChild(1).gameObject;
-        itemDropped[2] = transform.GetChild(2).gameObject;
+        if (!isShop)
+        {
+            itemDropped = new GameObject[transform.childCount + 3];
+            itemDropped[0] = transform.GetChild(0).gameObject;
+            itemDropped[1] = transform.GetChild(1).gameObject;
+            itemDropped[2] = transform.GetChild(2).gameObject;
+        }
     }
 
     // Update is called once per frame
@@ -32,7 +38,7 @@ public class EnemyBehaviour : MonoBehaviour
         // If the gameobject is dead, roll on a table of items to drop
         // The chance of a better item increases for each bad item dropped
         healthPoints = healthScript.healthPoints;
-        if (healthPoints <= 0)
+        if (healthPoints <= 0 && !isUnkillable)
         {
             int randomNumber = Random.Range(0, parent.itemDropCounter);
             if (randomNumber <= transform.childCount - 1)
@@ -57,6 +63,20 @@ public class EnemyBehaviour : MonoBehaviour
             }
             Debug.Log(randomNumber);
             Destroy(gameObject);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (isInteractable && collision.CompareTag("Player"))
+        {
+            if (isShop)
+            {
+
+            }
+        }
+        else
+        {
+            Debug.Log(collision.transform.name);
         }
     }
 }
