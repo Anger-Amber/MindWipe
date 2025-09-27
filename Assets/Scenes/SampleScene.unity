@@ -6839,15 +6839,18 @@ MonoBehaviour:
   healthScript: {fileID: 0}
   parent: {fileID: 0}
   isMobile: 0
-  isUnkillable: 1
-  isInteractable: 1
-  isShop: 1
   maxHealthPoints: 0
   healthPoints: 0
   itemDropped: []
   specificItemDropped: {fileID: 0}
   speciesID: 0
   itemID: 0
+  isUnkillable: 1
+  isInteractable: 1
+  isShop: 1
+  repeatableShop: 0
+  isEnemy: 0
+  itemCost: 5
 --- !u!114 &1293705566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12614,7 +12617,7 @@ MonoBehaviour:
   smallInventorySlots: []
   scrapUI: {fileID: 1901277276}
   DMGUI: {fileID: 1396207109}
-  scrap: 0
+  scrap: 10
   amountOfLargeInventorySlots: 6
   amountOfSmallInventorySlots: 39
   time: 0
