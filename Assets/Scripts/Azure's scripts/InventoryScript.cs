@@ -10,7 +10,7 @@ public class InventoryScript : MonoBehaviour
     [SerializeField] Transform[] smallInventorySlots;
     [SerializeField] TMPro.TextMeshProUGUI scrapUI;
     [SerializeField] TMPro.TextMeshProUGUI DMGUI;
-    [SerializeField] int scrap;
+    public int scrap;
     [SerializeField] int amountOfLargeInventorySlots;
     [SerializeField] int amountOfSmallInventorySlots;
     [SerializeField] float time;
