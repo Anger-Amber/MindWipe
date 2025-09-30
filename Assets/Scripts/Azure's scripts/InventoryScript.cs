@@ -10,7 +10,7 @@ public class InventoryScript : MonoBehaviour
     [SerializeField] Transform[] smallInventorySlots;
     [SerializeField] TMPro.TextMeshProUGUI scrapUI;
     [SerializeField] TMPro.TextMeshProUGUI DMGUI;
-    [SerializeField] int scrap;
+    public int scrap;
     [SerializeField] int amountOfLargeInventorySlots;
     [SerializeField] int amountOfSmallInventorySlots;
     [SerializeField] float time;
@@ -67,7 +67,7 @@ public class InventoryScript : MonoBehaviour
         if (pickedUpItem != null)
         {
             pickedUpItem.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pickedUpItem.transform.position = new Vector3(pickedUpItem.transform.position.x, pickedUpItem.transform.position.y, 0);
+            pickedUpItem.transform.position = new Vector3(pickedUpItem.transform.position.x, pickedUpItem.transform.position.y, -11f);
         }
     }
     private void OnMouseDown()
