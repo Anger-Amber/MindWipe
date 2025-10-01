@@ -15,6 +15,7 @@ public class CompleteMovement : MonoBehaviour
     [Header("Standard movement")]
 
     [SerializeField] float stopSpeed = 80;
+    [SerializeField] float fastFallSpeed = 80;
 
     public float movementSpeed = 40;
     public float movementSpeedCap = 10;
@@ -209,6 +210,11 @@ public class CompleteMovement : MonoBehaviour
                 myRigidbody.linearVelocityX = 0;
             }
         }
+
+        if (Input.GetKey(KeyCode.S) && (!onGround))
+        {
+            myRigidbody.linearVelocityY -= fastFallSpeed * Time.deltaTime;
+        }
     }
     void Jumping()
     {
@@ -322,7 +328,7 @@ public class CompleteMovement : MonoBehaviour
     void Dash()
     {
         // Regain dashes
-        if (onGround && numberOfDashes == 0)
+        if (numberOfDashes == 0 && onGround && !dashing)
         {
             numberOfDashes = maxDashes;
         }
@@ -426,14 +432,9 @@ public class CompleteMovement : MonoBehaviour
                     break;
             }
 
-            switch (myRigidbody.linearVelocityY)
+            if (myRigidbody.linearVelocityY > 0)
             {
-                case < 0:
-                    myRigidbody.linearVelocityY += dashStopSpeed * Time.deltaTime;
-                    break;
-                case > 0:
-                    myRigidbody.linearVelocityY -= dashStopSpeed * Time.deltaTime;
-                    break;
+               myRigidbody.linearVelocityY -= dashStopSpeed * Time.deltaTime;
             }
 
             // End deceleration when slow
@@ -444,7 +445,7 @@ public class CompleteMovement : MonoBehaviour
             }
 
             // Smoothness when trying to move after dash
-            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Mathf.Abs(myRigidbody.linearVelocityY) <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= movementSpeedCap)
+            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && (myRigidbody.linearVelocityY) <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= movementSpeedCap)
             {
                 dashTime = 0;
                 dashing = false;
