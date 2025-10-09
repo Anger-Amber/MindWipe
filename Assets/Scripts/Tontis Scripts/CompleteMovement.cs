@@ -9,9 +9,13 @@ public class CompleteMovement : MonoBehaviour
 
     [SerializeField] ContactFilter2D[] contactFilters;
 
+    [SerializeField] float coyoteFrames = 0.1f;
+    float leftGroundTime;
+
     [Header("Standard movement")]
 
     [SerializeField] float stopSpeed = 80;
+    [SerializeField] float fastFallSpeed = 80;
 
     public float movementSpeed = 40;
     public float movementSpeedCap = 10;
@@ -23,7 +27,7 @@ public class CompleteMovement : MonoBehaviour
     [SerializeField] float jumpDecreaseStart = 0.63f;
     [SerializeField] float jumpDecreaseTimeMulti = 1.33f;
 
-    bool onGround;
+    [SerializeField] bool onGround;
 
     float jumpTime;
 
@@ -147,7 +151,20 @@ public class CompleteMovement : MonoBehaviour
 
     void DoCollision()
     {
-        onGround = myRigidbody.IsTouching(contactFilters[1]);
+        if (myRigidbody.IsTouching(contactFilters[1]))
+        {
+            onGround = true;
+        }
+        if (onGround && !myRigidbody.IsTouching(contactFilters[1]))
+        {
+            leftGroundTime += Time.deltaTime;
+        }
+        if (leftGroundTime > coyoteFrames)
+        {
+            onGround = false;
+            leftGroundTime = 0;
+        }
+
         onWallL = myRigidbody.IsTouching(contactFilters[0]);
         onWallR = myRigidbody.IsTouching(contactFilters[2]);
     }
@@ -193,6 +210,11 @@ public class CompleteMovement : MonoBehaviour
                 myRigidbody.linearVelocityX = 0;
             }
         }
+
+        if (Input.GetKey(KeyCode.S) && (!onGround))
+        {
+            myRigidbody.linearVelocityY -= fastFallSpeed * Time.deltaTime;
+        }
     }
     void Jumping()
     {
@@ -200,7 +222,6 @@ public class CompleteMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) && onGround && !jumpStart)
         {
             jumpStart = true;
-            onGround = false;
 
             // If on a platform moving down the jump doesn't become shortened
             if (myRigidbody.linearVelocityY < 0)
@@ -209,6 +230,8 @@ public class CompleteMovement : MonoBehaviour
             }
 
             myRigidbody.linearVelocityY += jumpForce;
+            onGround = false;
+
         }
 
         // Timing the jump
@@ -305,7 +328,7 @@ public class CompleteMovement : MonoBehaviour
     void Dash()
     {
         // Regain dashes
-        if (onGround && numberOfDashes == 0)
+        if (numberOfDashes == 0 && onGround && !dashing)
         {
             numberOfDashes = maxDashes;
         }
@@ -409,14 +432,9 @@ public class CompleteMovement : MonoBehaviour
                     break;
             }
 
-            switch (myRigidbody.linearVelocityY)
+            if (myRigidbody.linearVelocityY > 0)
             {
-                case < 0:
-                    myRigidbody.linearVelocityY += dashStopSpeed * Time.deltaTime;
-                    break;
-                case > 0:
-                    myRigidbody.linearVelocityY -= dashStopSpeed * Time.deltaTime;
-                    break;
+               myRigidbody.linearVelocityY -= dashStopSpeed * Time.deltaTime;
             }
 
             // End deceleration when slow
@@ -427,7 +445,7 @@ public class CompleteMovement : MonoBehaviour
             }
 
             // Smoothness when trying to move after dash
-            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Mathf.Abs(myRigidbody.linearVelocityY) <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= movementSpeedCap)
+            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && (myRigidbody.linearVelocityY) <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= movementSpeedCap)
             {
                 dashTime = 0;
                 dashing = false;
