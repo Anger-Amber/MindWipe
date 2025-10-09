@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4947864709087674384}
   - component: {fileID: 6455059962694520491}
   - component: {fileID: 7365927083373922096}
+  - component: {fileID: 2423111011263959569}
   m_Layer: 0
   m_Name: 'Room trigger '
   m_TagString: Untagged
@@ -106,3 +107,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 32, y: 44}
   m_EdgeRadius: 0
+--- !u!114 &2423111011263959569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2298369789219381918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4caf1ba10eb103a409cdbdf2de118662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

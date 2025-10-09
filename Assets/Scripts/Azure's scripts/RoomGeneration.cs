@@ -6,6 +6,7 @@ public class RoomGeneration : MonoBehaviour
 {
     [SerializeField] Targetables targets;
     [SerializeField] TileBase basicTile;
+    [SerializeField] Tilemap roomLayout;
     [SerializeField] GameObject roomTrigger;
     [SerializeField] GameObject newRoomTrigger;
     [SerializeField] BoundsInt newRoomTemplateLocation;
@@ -17,11 +18,6 @@ public class RoomGeneration : MonoBehaviour
     void Start()
     {
         targets = GameObject.FindGameObjectWithTag("Targetables").GetComponent<Targetables>();
-        newRoomTemplateLocation.xMin = -10;
-        newRoomTemplateLocation.xMax = 22;
-        newRoomTemplateLocation.yMin = -2;
-        newRoomTemplateLocation.yMax = 20;
-        GenerateRoom(transform.GetChild(0).GetComponent<Tilemap>(), newRoomTemplateLocation);
     }
 
     private void FixedUpdate()
@@ -37,11 +33,15 @@ public class RoomGeneration : MonoBehaviour
         targets.transform.GetChild(0).GetComponent<CameraScript>().isHooked = enemiesAlive;
         transform.GetChild(3).GetComponent<TilemapCollider2D>().enabled = enemiesAlive;
         transform.GetChild(3).GetComponent<TilemapRenderer>().enabled = enemiesAlive;
+        if (enemiesAlive)
+        {
+            GenerateRoom(transform.GetChild(0).GetComponent<Tilemap>(), newRoomTemplateLocation);
+        }
     }
 
-    void GenerateRoom(Tilemap tileLayer, BoundsInt roomBounds)
+    public void GenerateRoom(Tilemap tileLayer, BoundsInt roomBounds)
     {
-        Tilemap roomtiles = transform.GetChild(4).GetChild(0).GetComponent<Tilemap>();
+        Tilemap roomtiles = transform.GetChild(4).GetChild(Random.Range(0, transform.GetChild(4).transform.childCount)).GetComponent<Tilemap>();
         roomTrigger = transform.GetChild(4).GetChild(0).GetChild(0).gameObject;
         newRoomTrigger = Instantiate(roomTrigger);
         newRoomTrigger.transform.position = offset*2 + roomTrigger.transform.position;

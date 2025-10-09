@@ -7,5 +7,5 @@ public class ItemScript : MonoBehaviour
     public bool isScrap;
     // false If It isn't Scrap Item
     public int id;
-    // item ID
+    // item ID 0 = damage multiplier * 1.1
 }
