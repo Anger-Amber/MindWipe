@@ -62,6 +62,13 @@ public class CompleteMovement : MonoBehaviour
 
     float dashTime;
 
+    [Header("Parry")]
+
+    [SerializeField] BoxCollider2D Parrybox;
+    bool isParrying;
+    float parryTime;
+    float parryDuration;
+
     void Awake()
     {
         for (int i = 0; i < 3; i++)
@@ -85,6 +92,8 @@ public class CompleteMovement : MonoBehaviour
         WallJump();
 
         Jumping();
+
+        Parry();
     }
 
     Vector2 GetLookDirection(bool right)
@@ -450,6 +459,24 @@ public class CompleteMovement : MonoBehaviour
                 dashTime = 0;
                 dashing = false;
             }
+        }
+    }
+    void Parry()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Parrybox.gameObject.SetActive(true);
+            isParrying = true;
+        }
+        if (isParrying)
+        {
+            parryTime += Time.deltaTime;
+        }
+        if (parryTime >= parryDuration)
+        {
+            Parrybox.gameObject.SetActive(false);
+            isParrying = false;
+            parryTime = 0;
         }
     }
 }
