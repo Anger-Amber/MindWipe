@@ -149,7 +149,7 @@ public class InventoryScript : MonoBehaviour
                     switch (itemID)
                     {
                         case 0:
-                            damageMultiplier *= 2;
+                            damageMultiplier *= 1.1f;
                             break;
                     }
                 }
