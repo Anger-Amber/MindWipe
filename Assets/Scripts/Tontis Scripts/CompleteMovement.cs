@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System.Text;
 using UnityEngine;
 
@@ -65,9 +66,10 @@ public class CompleteMovement : MonoBehaviour
     [Header("Parry")]
 
     [SerializeField] BoxCollider2D Parrybox;
+    [SerializeField] float parryDuration = 1;
+    [SerializeField] float cooldown = 0.25f;
     bool isParrying;
     float parryTime;
-    float parryDuration;
 
     void Awake()
     {
@@ -182,11 +184,8 @@ public class CompleteMovement : MonoBehaviour
         // Move left
         if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && myRigidbody.linearVelocityX > -movementSpeedCap)
         {
-            // turn around if not in air
-            if (onGround)
-            {
-                lookingRight = false;
-            }
+            transform.localScale = new Vector3(-1,1,1);
+            lookingRight = false;
 
             myRigidbody.linearVelocityX -= movementSpeed * Time.deltaTime;
         }
@@ -194,11 +193,8 @@ public class CompleteMovement : MonoBehaviour
         // Move right
         if (Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A) && myRigidbody.linearVelocityX < movementSpeedCap)
         {
-            // turn around if not in air
-            if (onGround)
-            {
-                lookingRight = true;
-            }
+            transform.localScale = Vector3.one;
+            lookingRight = true;
 
             myRigidbody.linearVelocityX += movementSpeed * Time.deltaTime;
         }
@@ -463,7 +459,7 @@ public class CompleteMovement : MonoBehaviour
     }
     void Parry()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !isParrying)
         {
             Parrybox.gameObject.SetActive(true);
             isParrying = true;
@@ -475,8 +471,15 @@ public class CompleteMovement : MonoBehaviour
         if (parryTime >= parryDuration)
         {
             Parrybox.gameObject.SetActive(false);
-            isParrying = false;
-            parryTime = 0;
         }
+        if (parryTime >= parryDuration + cooldown)
+        {
+            parryTime = 0;
+            isParrying = false;
+        }
+    }
+    public void ParryBoost()
+    {
+        Debug.Log("boing");
     }
 }
