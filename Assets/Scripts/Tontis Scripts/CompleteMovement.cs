@@ -1,5 +1,3 @@
-using Mono.Cecil.Cil;
-using System.Text;
 using UnityEngine;
 
 public class CompleteMovement : MonoBehaviour
@@ -53,7 +51,7 @@ public class CompleteMovement : MonoBehaviour
     [SerializeField] float dashStrength = 30;
     [SerializeField] float dashStopSpeed = 160;
     [SerializeField] float dashEnd = 0.2f;
-    [SerializeField] Vector2 LookDirection;
+    [SerializeField] Vector2Int LookDirection;
     [SerializeField] bool lookingRight = true;
 
     public int numberOfDashes;
@@ -68,6 +66,7 @@ public class CompleteMovement : MonoBehaviour
     [SerializeField] BoxCollider2D Parrybox;
     [SerializeField] float parryDuration = 1;
     [SerializeField] float cooldown = 0.25f;
+    [SerializeField] float parryBoost = 10;
     bool isParrying;
     float parryTime;
 
@@ -98,10 +97,10 @@ public class CompleteMovement : MonoBehaviour
         Parry();
     }
 
-    Vector2 GetLookDirection(bool right)
+    Vector2Int GetLookDirection(bool right)
     {
         // reset
-        Vector2 lookDirection = Vector2.zero;
+        Vector2Int lookDirection = Vector2Int.zero;
 
         // Default depending on last pressed a/d key
         if (right)
@@ -355,31 +354,31 @@ public class CompleteMovement : MonoBehaviour
             switch (LookDirection)
             {
                 // right
-                case Vector2 v when v.Equals(Vector2.right):
+                case Vector2Int v when v.Equals(Vector2Int.right):
 
                     myRigidbody.linearVelocityX += dashStrength;
                     break;
 
                 //left
-                case Vector2 v when v.Equals(Vector2.left):
+                case Vector2Int v when v.Equals(Vector2Int.left):
 
                     myRigidbody.linearVelocityX -= dashStrength;
                     break;
 
                 // up
-                case Vector2 v when v.Equals(Vector2.up):
+                case Vector2Int v when v.Equals(Vector2Int.up):
 
                     myRigidbody.linearVelocityY += dashStrength;
                     break;
 
                 //down
-                case Vector2 v when v.Equals(Vector2.down):
+                case Vector2Int v when v.Equals(Vector2Int.down):
 
                     myRigidbody.linearVelocityY -= dashStrength;
                     break;
 
                 //right and down
-                case Vector2 v when v.Equals(new Vector2(1, -1)):
+                case Vector2Int v when v.Equals(new Vector2Int(1, -1)):
 
                     // trig for circle
                     myRigidbody.linearVelocityX += dashStrength * Mathf.Sqrt(2) / 2;
@@ -387,7 +386,7 @@ public class CompleteMovement : MonoBehaviour
                     break;
 
                 // right and up
-                case Vector2 v when v.Equals(Vector2.one):
+                case Vector2Int v when v.Equals(Vector2Int.one):
 
                     // trig for circle
                     myRigidbody.linearVelocityX += dashStrength * Mathf.Sqrt(2) / 2;
@@ -395,7 +394,7 @@ public class CompleteMovement : MonoBehaviour
                     break;
 
                 //left and down
-                case Vector2 v when v.Equals(new Vector2(-1, -1)):
+                case Vector2Int v when v.Equals(new Vector2Int(-1, -1)):
 
                     // trig for circle
                     myRigidbody.linearVelocityX -= dashStrength * Mathf.Sqrt(2) / 2;
@@ -403,7 +402,7 @@ public class CompleteMovement : MonoBehaviour
                     break;
 
                 //left and up
-                case Vector2 v when v.Equals(new Vector2(-1, 1)):
+                case Vector2Int v when v.Equals(new Vector2Int(-1, 1)):
 
                     // trig for circle
                     myRigidbody.linearVelocityX -= dashStrength * Mathf.Sqrt(2) / 2;
@@ -480,6 +479,10 @@ public class CompleteMovement : MonoBehaviour
     }
     public void ParryBoost()
     {
-        Debug.Log("boing");
+        if (myRigidbody.linearVelocityY < 0)
+        {
+            myRigidbody.linearVelocityY = 0;
+        }
+        myRigidbody.linearVelocityY += parryBoost;
     }
 }
