@@ -19,6 +19,7 @@ public class CompleteMovement : MonoBehaviour
     public float movementSpeed = 40;
     public float movementSpeedCap = 10;
 
+    bool fastFall;
 
     [Header("Jumping")]
 
@@ -68,6 +69,7 @@ public class CompleteMovement : MonoBehaviour
     [SerializeField] float cooldown = 0.25f;
     [SerializeField] float parryBoost = 10;
     bool isParrying;
+    bool onCooldown;
     float parryTime;
 
     void Awake()
@@ -164,6 +166,7 @@ public class CompleteMovement : MonoBehaviour
         if (myRigidbody.IsTouching(contactFilters[1]))
         {
             onGround = true;
+            fastFall = false;
         }
         if (onGround && !myRigidbody.IsTouching(contactFilters[1]))
         {
@@ -215,9 +218,15 @@ public class CompleteMovement : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.S) && (!onGround))
+        if (Input.GetKeyDown(KeyCode.S) && (!onGround))
         {
-            myRigidbody.linearVelocityY -= fastFallSpeed * Time.deltaTime;
+            myRigidbody.linearVelocityY -= fastFallSpeed;
+            fastFall = true;
+        }
+        if (Input.GetKeyUp(KeyCode.S) && (!onGround) && fastFall)
+        {
+            myRigidbody.linearVelocityY += fastFallSpeed;
+            fastFall = false;
         }
     }
     void Jumping()
@@ -467,22 +476,31 @@ public class CompleteMovement : MonoBehaviour
         {
             parryTime += Time.deltaTime;
         }
-        if (parryTime >= parryDuration)
+        if (!onCooldown && parryTime >= parryDuration)
         {
             Parrybox.gameObject.SetActive(false);
-        }
-        if (parryTime >= parryDuration + cooldown)
-        {
             parryTime = 0;
+            onCooldown = true;
+        }
+        if (onCooldown && parryTime >= cooldown)
+        {
             isParrying = false;
+            onCooldown = false;
+            parryTime = 0;
         }
     }
     public void ParryBoost()
     {
-        if (myRigidbody.linearVelocityY < 0)
+        if (!onCooldown)
         {
-            myRigidbody.linearVelocityY = 0;
+            if (myRigidbody.linearVelocityY < 0)
+            {
+                myRigidbody.linearVelocityY = 0;
+            }
+            myRigidbody.linearVelocityY += parryBoost;
+            Parrybox.gameObject.SetActive(false);
+            onCooldown = true;
+            parryTime = 0;
         }
-        myRigidbody.linearVelocityY += parryBoost;
     }
 }
