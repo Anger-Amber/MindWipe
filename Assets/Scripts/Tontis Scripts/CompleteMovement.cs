@@ -72,6 +72,10 @@ public class CompleteMovement : MonoBehaviour
     bool onCooldown;
     float parryTime;
 
+    [Header("Animation")]
+
+    Animator myAnimator;
+
     void Awake()
     {
         for (int i = 0; i < 3; i++)
@@ -82,6 +86,7 @@ public class CompleteMovement : MonoBehaviour
         }
         
         myRigidbody = GetComponent<Rigidbody2D>();
+        myAnimator = GetComponent<Animator>();
     }
 
     void Update()
@@ -167,6 +172,7 @@ public class CompleteMovement : MonoBehaviour
         {
             onGround = true;
             fastFall = false;
+            myAnimator.SetBool("Airborn", false);
         }
         if (onGround && !myRigidbody.IsTouching(contactFilters[1]))
         {
@@ -190,6 +196,7 @@ public class CompleteMovement : MonoBehaviour
             lookingRight = false;
 
             myRigidbody.linearVelocityX -= movementSpeed * Time.deltaTime;
+            myAnimator.SetBool("Running", true);
         }
 
         // Move right
@@ -199,11 +206,15 @@ public class CompleteMovement : MonoBehaviour
             lookingRight = true;
 
             myRigidbody.linearVelocityX += movementSpeed * Time.deltaTime;
+            myAnimator.SetBool("Running", true);
+
         }
 
         // Deceleration if not going left or right
         if ((((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) && !(leftWallL || leftWallR)) || (onGround && Mathf.Abs(myRigidbody.linearVelocityX) > movementSpeedCap ))
         {
+            myAnimator.SetBool("Running", false);
+
             if (myRigidbody.linearVelocityX < -stopSpeed * Time.deltaTime)
             {
                 myRigidbody.linearVelocityX += stopSpeed * Time.deltaTime;
@@ -235,6 +246,7 @@ public class CompleteMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) && onGround && !jumpStart)
         {
             jumpStart = true;
+            myAnimator.SetBool("Jumping", true);
 
             // If on a platform moving down the jump doesn't become shortened
             if (myRigidbody.linearVelocityY < 0)
@@ -257,6 +269,10 @@ public class CompleteMovement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space) && jumpStart)
         {
             jumpStart = false;
+            myAnimator.SetBool("Airborn", true);
+            myAnimator.SetBool("Jumping", false);
+
+
 
             if (jumpDecreaseStart - jumpTime * jumpDecreaseTimeMulti > 0)
             {
@@ -269,6 +285,8 @@ public class CompleteMovement : MonoBehaviour
         // Not jumping anymore if moving downwards
         if (myRigidbody.linearVelocityY < 0)
         {
+            myAnimator.SetBool("Airborn", true);
+            myAnimator.SetBool("Jumping", false);
             jumpStart = false;
             jumpTime = 0;
         }
@@ -352,6 +370,7 @@ public class CompleteMovement : MonoBehaviour
         if (!dashing && (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && numberOfDashes > 0)
         {
             dashing = true;
+            myAnimator.SetBool("Dashing", true);
             onGround = false;
             numberOfDashes -= 1;
 
@@ -434,6 +453,9 @@ public class CompleteMovement : MonoBehaviour
         // dash timer
         if (dashTime >= dashEnd)
         {
+            myAnimator.SetBool("DashEnd", true);
+            myAnimator.SetBool("Dashing", false);
+
             // decelerate depending on direction moving
             switch (myRigidbody.linearVelocityX)
             {
@@ -455,6 +477,7 @@ public class CompleteMovement : MonoBehaviour
             {
                 dashTime = 0;
                 dashing = false;
+                myAnimator.SetBool("DashEnd", false);
             }
 
             // Smoothness when trying to move after dash
@@ -462,6 +485,7 @@ public class CompleteMovement : MonoBehaviour
             {
                 dashTime = 0;
                 dashing = false;
+                myAnimator.SetBool("DashEnd", false);
             }
         }
     }
