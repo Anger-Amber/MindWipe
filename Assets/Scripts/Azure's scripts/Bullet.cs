@@ -32,7 +32,7 @@ public class Bullet : MonoBehaviour
             }
             else
             {
-                myRigidbody2D.AddForce(1000 * speed * transform.right * Time.deltaTime);
+                myRigidbody2D.AddForce(1000 * speed * Time.deltaTime * transform.right);
             }
         }
 
@@ -46,17 +46,24 @@ public class Bullet : MonoBehaviour
     {
         if (collision.CompareTag("Player") && !playerBullet)
         {
-            Debug.Log("ouch");
+            //Debug.Log("ouch");
         }
 
         if (collision.CompareTag("Hunter") && playerBullet)
         {
-            Debug.Log("bonk");
         }
 
         if (collision.CompareTag("Security") && playerBullet)
         {
-            Debug.Log("blip");
+            if (collision.GetComponent<Health>() != null)
+            {
+                collision.GetComponent<Health>().healthPoints -= damage;
+                Debug.Log("bonk");
+            }
+            else if (collision.GetComponentInChildren<Health>() != null)
+            {
+                collision.GetComponent<Health>().healthPoints -= damage;
+            }
         }
         Destroy(gameObject);
     }

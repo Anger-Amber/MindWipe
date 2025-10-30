@@ -1,3 +1,4 @@
+using TMPro.Examples;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,13 +13,14 @@ public class RoomGeneration : MonoBehaviour
     public GameObject newRoomTrigger;
     public BoundsInt newRoomTemplateLocation;
     public Vector3Int offset;
+    [SerializeField] Vector2Int newRoomSize;
     [SerializeField] bool enemiesAlive;
+    [SerializeField] bool repeatRoomCheck;
     [SerializeField] Tilemap roomTiles;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        roomTiles = transform.GetChild(4).GetChild(Random.Range(0, transform.GetChild(4).transform.childCount)).GetComponent<Tilemap>();
         targets = GameObject.FindGameObjectWithTag("Targetables").GetComponent<Targetables>();
         basicTilemap = transform.GetChild(0).GetComponent<Tilemap>();
         roomLayout = transform.GetChild(5).GetComponent<Tilemap>();
@@ -40,76 +42,247 @@ public class RoomGeneration : MonoBehaviour
     }
     public void CheckRooms(Transform collision)
     {
-        Vector3Int triggerLocation = Vector3Int.FloorToInt(new Vector3((collision.transform.position.x + 10) / 32, (collision.transform.position.y + 2) / 22, 0));
-        if (roomTiles.GetComponent<RoomSize>().roomSize.y == 2)
+        // condensed code
+        roomTiles = transform.GetChild(4).GetChild(Random.Range(0, transform.GetChild(4).transform.childCount)).GetComponent<Tilemap>();
+        newRoomSize = roomTiles.GetComponent<RoomSize>().roomSize;
+        Vector3Int triggerLocation = Vector3Int.FloorToInt(new Vector3((collision.transform.position.x + 36) / 32, (collision.transform.position.y + 15) / 22, 0));
+        // checking if we can place a room reaching into the top left corner
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + newRoomSize.y - 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + newRoomSize.y - 1, 0)) == null)
         {
-            if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y)) == null &&
-                ((roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1)) == null) ||
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1)) == null))
-            {
-                if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1)) == null)
-                {
-                    offset = new Vector3Int(triggerLocation.x * 16 - 16, triggerLocation.y * 22);
-                    Debug.Log(offset);
-                    GenerateRoom(basicTilemap, newRoomTemplateLocation);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1, triggerLocation.z), basicTile);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, triggerLocation.z), basicTile);
-                }
-                else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1)) == null)
-                {
-                    offset = new Vector3Int(triggerLocation.x * 16 - 16, triggerLocation.y * 22 - 22);
-                    Debug.Log(offset);
-                    GenerateRoom(basicTilemap, newRoomTemplateLocation);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, triggerLocation.z), basicTile);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1, triggerLocation.z), basicTile);
-                }
-            }
-            else
-            {
-                Debug.Log("Beep boop I am a robot and I eat batteries, instead of normal people foods");
-                Debug.Log(collision.transform.name);
-            }
-
-            if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y)) == null &&
-                ((roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1)) == null) ||
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1)) == null))
-            {
-                if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1)) == null)
-                {
-                    offset = new Vector3Int(triggerLocation.x * 16 + 16, triggerLocation.y * 22);
-                    Debug.Log(triggerLocation);
-                    GenerateRoom(basicTilemap, newRoomTemplateLocation);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1, triggerLocation.z), basicTile);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y, triggerLocation.z), basicTile);
-                }
-                if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1)) == null)
-                {
-                    offset = new Vector3Int(triggerLocation.x * 16 + 16, triggerLocation.y * 22 - 22);
-                    Debug.Log(offset);
-                    GenerateRoom(basicTilemap, newRoomTemplateLocation);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y, triggerLocation.z), basicTile);
-                    roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1, triggerLocation.z), basicTile);
-                }
-            }
-            else
-            {
-                Debug.Log("Beep boop I am a robot and I eat batteries, instead of normal people foods");
-                Debug.Log(roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y)) == null);
-                Debug.Log(triggerLocation);
-            }
-            roomLayout.SetTile(triggerLocation, basicTile);
+            offset = new Vector3Int((triggerLocation.x - newRoomSize.x) * 16, triggerLocation.y * 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + newRoomSize.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + newRoomSize.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
         }
-    }
-    public void GenerateRoom(Tilemap tileLayer, BoundsInt roomBounds)
-    {
-        roomTrigger = transform.GetChild(4).GetChild(0).GetChild(0).gameObject;
-        newRoomTrigger = Instantiate(roomTrigger);
-        newRoomTrigger.GetComponent<RoomTriggerScript>().parentsRoomGenScript = transform.GetComponent<RoomGeneration>();
-        newRoomTrigger.transform.position = offset * 2 + roomTrigger.transform.position;
-        newRoomTrigger.transform.SetParent(transform.GetChild(3));
-        for (int i = 0; i < roomBounds.yMax - roomBounds.yMin; i++)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, 0)) == null)
         {
-            for (int c = 0; c < roomBounds.xMax - roomBounds.xMin; c++)
+            repeatRoomCheck = true;
+        }
+
+        // checking if we can place a room reaching into the bottom left corner
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - newRoomSize.y + 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - newRoomSize.y + 1, 0)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x - newRoomSize.x) * 16, triggerLocation.y * 11 - 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - newRoomSize.y + 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - newRoomSize.y + 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y, 0)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking if we can place a room reaching into the top right corner
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + newRoomSize.y - 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + newRoomSize.y - 1)) == null)
+        {
+            offset = new Vector3Int(triggerLocation.x * 16 + 16, triggerLocation.y * 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + newRoomSize.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + newRoomSize.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking if we can place a room reaching into the bottom right corner
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - newRoomSize.y + 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - newRoomSize.y + 1)) == null)
+        {
+            offset = new Vector3Int(triggerLocation.x * 16 + 16, triggerLocation.y * 11 - (11 * newRoomSize.y - 1));
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - newRoomSize.y + 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - newRoomSize.y + 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking if we can spawn a room on top reaching into the left
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + newRoomSize.y)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x - newRoomSize.x + 1) * 16, triggerLocation.y * 11 + 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles); 
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking if we can spawn a room on top reaching into the right
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + newRoomSize.y, 0)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x + newRoomSize.x - 1) * 16, triggerLocation.y * 11 + 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking if we can spawn a room at the bottom reaching into the right
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - newRoomSize.y, 0)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x) * 16, (triggerLocation.y - newRoomSize.y) * 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking if we can spawn a room at the bottom reaching into the left
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - newRoomSize.y)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x - newRoomSize.x + 1) * 16, (triggerLocation.y - newRoomSize.y) * 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);            
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking the top right corner 
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + newRoomSize.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + newRoomSize.y, 0)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x + 1) * 16, triggerLocation.y * 11 + 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking the top left corner 
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + newRoomSize.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + newRoomSize.y, 0)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x - newRoomSize.x) * 16, triggerLocation.y * 11 + 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking the bottom right corner 
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - newRoomSize.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - newRoomSize.y, 0)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x + 1) * 16, (triggerLocation.y - newRoomSize.y) * 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        // checking the bottom left corner 
+        if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - newRoomSize.y)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - 1, 0)) == null &&
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - newRoomSize.y, 0)) == null)
+        {
+            offset = new Vector3Int((triggerLocation.x - newRoomSize.x) * 16, (triggerLocation.y - newRoomSize.y) * 11);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - newRoomSize.y, 0), basicTile);
+            roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - 1, 0), basicTile);
+            GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
+        }
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1)) == null)
+        {
+            repeatRoomCheck = true;
+        }
+
+        if (repeatRoomCheck)
+        {
+            repeatRoomCheck = false;
+            CheckRooms(collision);
+        }
+
+        roomLayout.SetTile(triggerLocation, basicTile);
+    }
+    public void GenerateRoom(Tilemap tileLayer, BoundsInt roomBounds, Tilemap roomLayout)
+    {
+        for (int i = 0; i < roomTiles.transform.childCount; i++)
+        {
+            roomTrigger = roomLayout.gameObject.transform.GetChild(i).gameObject;
+            newRoomTrigger = Instantiate(roomTrigger);
+            newRoomTrigger.GetComponent<RoomTriggerScript>().parentsRoomGenScript = transform.GetComponent<RoomGeneration>();
+            newRoomTrigger.transform.position = offset * 2 + roomTrigger.transform.position;
+            newRoomTrigger.transform.SetParent(transform.GetChild(3));
+        }
+        for (int c = 0; c < roomBounds.yMax - roomBounds.yMin; c++)
+        {
+            for (int i = 0; i < roomBounds.xMax - roomBounds.xMin; i++)
             {
                 if (roomTiles.GetTile(new Vector3Int(i + roomBounds.xMin, c + roomBounds.yMin, 0)) != null)
                 {
@@ -118,5 +291,7 @@ public class RoomGeneration : MonoBehaviour
                 }
             }
         }
+        roomTiles = transform.GetChild(4).GetChild(Random.Range(0, transform.GetChild(4).transform.childCount)).GetComponent<Tilemap>();
+        newRoomSize = roomTiles.GetComponent<RoomSize>().roomSize;
     }
 }

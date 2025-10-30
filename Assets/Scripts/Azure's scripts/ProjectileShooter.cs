@@ -14,7 +14,7 @@ public class ProjectileShooter : MonoBehaviour
     [SerializeField] GameObject bulletPrefab;
     [SerializeField] SpriteRenderer bulletSprite;
     [SerializeField] CircleCollider2D colliderSettings;
-    [SerializeField] Targetables parentsTargetList;
+    public Targetables parentsTargetList;
     [SerializeField] Camera cam;
 
     [SerializeField] float[] bulletSpreadAndAmount =
@@ -71,6 +71,7 @@ public class ProjectileShooter : MonoBehaviour
         
         if (!isPlayer)
         {
+            parentsTargetList = GetComponentInParent<Targetables>();
             //makes the shooter look at the target
             possibleTargets = parentsTargetList.compressedTargetList;
             targetTransform = GetClosestEnemy(possibleTargets);
@@ -186,8 +187,7 @@ public class ProjectileShooter : MonoBehaviour
         shotBullet.transform.localScale = new Vector3(bulletScale,bulletScale,bulletScale);
 
         //position
-        shotBullet.transform.position = firePoint.position;
-        shotBullet.transform.rotation = gameObject.transform.rotation;
+        shotBullet.transform.SetPositionAndRotation(firePoint.position, gameObject.transform.rotation);
         shotBullet.transform.Rotate(0,0,rotation);
 
         //getting The Components Through Code
@@ -202,7 +202,7 @@ public class ProjectileShooter : MonoBehaviour
         //collider Settings
         circleCollider.includeLayers = colliderSettings.includeLayers;
         circleCollider.excludeLayers = colliderSettings.excludeLayers;
-        circleCollider.radius = circleCollider.radius * 0.40f;
+        circleCollider.radius *= 0.40f;
         circleCollider.isTrigger = true;
 
         //settings Of The Bullets
@@ -215,6 +215,7 @@ public class ProjectileShooter : MonoBehaviour
         bulletScript.doActions = true;
         bulletScript.timer = bulletTimer;
         bulletScript.missile = missile;
+        bulletScript.playerBullet = isPlayer;
     }
 
     // Getting the closest enemy through code

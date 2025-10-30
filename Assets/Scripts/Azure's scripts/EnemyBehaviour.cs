@@ -4,10 +4,10 @@ using UnityEngine;
 public class EnemyBehaviour : MonoBehaviour
 {
     [SerializeField] Health healthScript;
-    [SerializeField] Targetables parent;
+    public Targetables parent;
     [SerializeField] bool isMobile = false;
     [SerializeField] float maxHealthPoints;
-    [SerializeField] float healthPoints;
+    public float healthPoints;
 
     [SerializeField] GameObject[] itemDropped;
     [SerializeField] GameObject specificItemDropped;
@@ -26,20 +26,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     void Awake()
     {
-        healthScript = GetComponent<Health>();
-        parent = transform.parent.GetComponent<Targetables>();
-        healthScript.healthPoints = maxHealthPoints;
-        if (!isShop)
-        {
-            itemDropped = new GameObject[transform.childCount + 3];
-            itemDropped[0] = transform.GetChild(0).gameObject;
-            itemDropped[1] = transform.GetChild(1).gameObject;
-            itemDropped[2] = transform.GetChild(2).gameObject;
-        }
-        if (itemCost == 0)
-        {
-            itemCost = 5;
-        }
+        RunAwake();
     }
 
     // Update is called once per frame
@@ -53,13 +40,13 @@ public class EnemyBehaviour : MonoBehaviour
             int randomNumber = Random.Range(0, parent.itemDropCounter);
             if (randomNumber <= transform.childCount - 1)
             {
-                itemDropped[randomNumber].gameObject.SetActive(true);
+                itemDropped[randomNumber].SetActive(true);
                 specificItemDropped = Instantiate(itemDropped[randomNumber], transform.position, 
                     Quaternion.Euler(transform.rotation.x, transform.rotation.y,
                     transform.rotation.z + Random.Range(-45,45)));
                 // Adds a boost to the item dropped for comedic effect
                 specificItemDropped.GetComponent<Rigidbody2D>().AddRelativeForceY(1000);
-                itemDropped[randomNumber].gameObject.SetActive(false);
+                itemDropped[randomNumber].SetActive(false);
             }
             // Resets the pity counter if the gameobject dropped an item
             if (randomNumber == 0)
@@ -71,7 +58,7 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 parent.itemDropCounter--;
             }
-            Debug.Log(randomNumber);
+            //Debug.Log(randomNumber);
             Destroy(gameObject);
         }
 
@@ -107,6 +94,24 @@ public class EnemyBehaviour : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    public void RunAwake()
+    {
+        healthScript = GetComponent<Health>();
+        //parent = transform.parent.GetComponent<Targetables>();
+        healthScript.healthPoints = maxHealthPoints;
+        if (!isShop)
+        {
+            itemDropped = new GameObject[transform.childCount - 1];
+            itemDropped[0] = transform.GetChild(0).gameObject;
+            itemDropped[1] = transform.GetChild(1).gameObject;
+            itemDropped[2] = transform.GetChild(2).gameObject;
+        }
+        if (itemCost == 0)
+        {
+            itemCost = 5;
         }
     }
 }
