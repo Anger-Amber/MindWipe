@@ -5,14 +5,13 @@ public class RoomTriggerScript : MonoBehaviour
     public RoomGeneration parentsRoomGenScript;
     public GameObject[] enemies;
     public GameObject newEnemy;
-    [SerializeField] int i;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         parentsRoomGenScript = transform.parent.parent.GetComponent<RoomGeneration>();
         parentsRoomGenScript.CheckRooms(transform);
         enemies = new GameObject[transform.childCount];
-        while (transform.GetChild(0) != null) 
+        for (int i = 0; i < transform.childCount; i++)
         {
             Debug.Log(transform.childCount + " " + i);
             enemies[i] = transform.GetChild(i).gameObject;
@@ -25,8 +24,6 @@ public class RoomTriggerScript : MonoBehaviour
             newEnemy.transform.GetComponent<EnemyBehaviour>().RunAwake();
             newEnemy.transform.GetComponent<EnemyBehaviour>().enabled = true;
             Destroy(gameObject.transform.GetChild(i).gameObject);
-            i++;
         }
-        i = 0;
     }
 }
