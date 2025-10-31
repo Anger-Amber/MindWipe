@@ -61,13 +61,7 @@ public class CameraScript : MonoBehaviour
 
         myRigidbody2D.linearVelocity = Vector3.zero;
 
-        if (isHooked)
-        {
-            if (position.x < aliveFieldMin.x + transform.parent.position.x) { position.x = aliveFieldMin.x + transform.parent.position.x; }
-            if (position.y < aliveFieldMin.y + transform.parent.position.y) { position.y = aliveFieldMin.y + transform.parent.position.y; }
-            if (position.x > aliveFieldMax.x + transform.parent.position.x) { position.x = aliveFieldMax.x + transform.parent.position.x; }
-            if (position.y > aliveFieldMax.y + transform.parent.position.y) { position.y = aliveFieldMax.y + transform.parent.position.y; }
-        }
+
         transform.position = Vector2.Lerp(transform.position, position, cameraMoveSpeed);
     }
 }
