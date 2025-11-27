@@ -5,12 +5,15 @@ using UnityEngine.Tilemaps;
 public class ArmedadilloScript : MonoBehaviour
 {
     BoxCollider2D myBoxCollider2D;
+    ParticleSystem myParticleSystem;
+    GameObject dupedParticleSystem;
     TilemapCollider2D groundTilesCollider;
     Tilemap groundTiles;
     [SerializeField] GameObject player;
     void Awake()
     {
         myBoxCollider2D = GetComponent<BoxCollider2D>();
+        myParticleSystem = transform.GetChild(2).GetComponent<ParticleSystem>();
     }
 
     void Update()
@@ -21,7 +24,7 @@ public class ArmedadilloScript : MonoBehaviour
     {
         DoCollision(collision.gameObject);
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         DoCollision(collision.gameObject);
     }
@@ -35,6 +38,9 @@ public class ArmedadilloScript : MonoBehaviour
     {
         groundTiles.SetTile(Vector3Int.FloorToInt
                 (new Vector3(transform.position.x * 0.5f + myBoxCollider2D.size.x * 0.25f + tileDeleteLocationx, tileDeleteLocationy, 0)), null);
+        dupedParticleSystem = Instantiate(myParticleSystem.gameObject, Vector3Int.FloorToInt
+                (new Vector3(transform.position.x * 0.5f + myBoxCollider2D.size.x * 0.25f + tileDeleteLocationx, tileDeleteLocationy, 0)) * 2, Quaternion.identity);   
+        dupedParticleSystem.SetActive(true);
     }
     void DoCollision(GameObject collision)
     {
