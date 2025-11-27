@@ -18,7 +18,6 @@ public class Bullet : MonoBehaviour
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myCircleCollider2D = GetComponent<CircleCollider2D>();
-        myTransform = GetComponent<Transform>();
     }
     private void Update()
     {
@@ -57,12 +56,12 @@ public class Bullet : MonoBehaviour
         {
             if (collision.GetComponent<Health>() != null)
             {
-                collision.GetComponent<Health>().healthPoints -= damage;
+                //collision.GetComponent<Health>().healthPoints -= damage;
                 Debug.Log("bonk");
             }
             else if (collision.GetComponentInChildren<Health>() != null)
             {
-                collision.GetComponent<Health>().healthPoints -= damage;
+                //collision.GetComponent<Health>().healthPoints -= damage;
             }
         }
         Destroy(gameObject);

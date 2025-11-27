@@ -26,11 +26,11 @@ namespace TMPro.Examples
 
         public CameraModes CameraMode = CameraModes.Follow;
 
-        public bool MovementSmoothing = true;
+        public bool CompleteMovementSmoothing = true;
         public bool RotationSmoothing = false;
         private bool previousSmoothing;
 
-        public float MovementSmoothingValue = 25f;
+        public float CompleteMovementSmoothingValue = 25f;
         public float RotationSmoothingValue = 5.0f;
 
         public float MoveSensitivity = 2.0f;
@@ -61,7 +61,7 @@ namespace TMPro.Examples
                 Input.simulateMouseWithTouches = false;
 
             cameraTransform = transform;
-            previousSmoothing = MovementSmoothing;
+            previousSmoothing = CompleteMovementSmoothing;
         }
 
 
@@ -98,10 +98,10 @@ namespace TMPro.Examples
                     // Free Camera implementation
                 }
 
-                if (MovementSmoothing == true)
+                if (CompleteMovementSmoothing == true)
                 {
                     // Using Smoothing
-                    cameraTransform.position = Vector3.SmoothDamp(cameraTransform.position, desiredPosition, ref currentVelocity, MovementSmoothingValue * Time.fixedDeltaTime);
+                    cameraTransform.position = Vector3.SmoothDamp(cameraTransform.position, desiredPosition, ref currentVelocity, CompleteMovementSmoothingValue * Time.fixedDeltaTime);
                     //cameraTransform.position = Vector3.Lerp(cameraTransform.position, desiredPosition, Time.deltaTime * 5.0f);
                 }
                 else
@@ -143,7 +143,7 @@ namespace TMPro.Examples
                     CameraMode = CameraModes.Follow;
 
                 if (Input.GetKeyDown(KeyCode.S))
-                    MovementSmoothing = !MovementSmoothing;
+                    CompleteMovementSmoothing = !CompleteMovementSmoothing;
 
 
                 // Check for right mouse button to change camera follow and elevation angle
@@ -212,7 +212,7 @@ namespace TMPro.Examples
                         {
                             CameraTarget = hit.transform;
                             OrbitalAngle = 0;
-                            MovementSmoothing = previousSmoothing;
+                            CompleteMovementSmoothing = previousSmoothing;
                         }
 
                     }
@@ -228,8 +228,8 @@ namespace TMPro.Examples
                         dummyTarget.position = CameraTarget.position;
                         dummyTarget.rotation = CameraTarget.rotation;
                         CameraTarget = dummyTarget;
-                        previousSmoothing = MovementSmoothing;
-                        MovementSmoothing = false;
+                        previousSmoothing = CompleteMovementSmoothing;
+                        CompleteMovementSmoothing = false;
                     }
                     else if (dummyTarget != CameraTarget)
                     {
@@ -237,8 +237,8 @@ namespace TMPro.Examples
                         dummyTarget.position = CameraTarget.position;
                         dummyTarget.rotation = CameraTarget.rotation;
                         CameraTarget = dummyTarget;
-                        previousSmoothing = MovementSmoothing;
-                        MovementSmoothing = false;
+                        previousSmoothing = CompleteMovementSmoothing;
+                        CompleteMovementSmoothing = false;
                     }
 
 

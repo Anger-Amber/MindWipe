@@ -13,7 +13,6 @@ public class RoomTriggerScript : MonoBehaviour
         enemies = new GameObject[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)
         {
-            Debug.Log(transform.childCount + " " + i);
             enemies[i] = transform.GetChild(i).gameObject;
             enemies[i].SetActive(true);
             newEnemy = Instantiate(enemies[i]);

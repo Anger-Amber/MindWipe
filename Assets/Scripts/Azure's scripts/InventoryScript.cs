@@ -29,7 +29,7 @@ public class InventoryScript : MonoBehaviour
         if (inventory == true)
         {
             inventoryInterface = transform.GetChild(0).gameObject;
-            player.GetComponent<Movement>().myInventory = gameObject.GetComponent<InventoryScript>();
+            player.GetComponent<CompleteMovement>().myInventory = gameObject.GetComponent<InventoryScript>();
             slotCategory = inventoryInterface.transform.GetChild(0);
             largeInventorySlots = new Transform[amountOfLargeInventorySlots];
             smallInventorySlots = new Transform[amountOfSmallInventorySlots];
@@ -151,6 +151,15 @@ public class InventoryScript : MonoBehaviour
                         case 0:
                             damageMultiplier *= 1.1f;
                             break;
+                        case 1:
+                            damageMultiplier *= 1.2f;
+                            break;
+                        case 2:
+                            damageMultiplier *= 1.4f;
+                            break;
+                        case 3:
+                            damageMultiplier *= 2f;
+                            break;
                     }
                 }
             }
@@ -163,7 +172,16 @@ public class InventoryScript : MonoBehaviour
                     switch (itemID)
                     {
                         case 0:
-                            damageMultiplier *= 2;
+                            damageMultiplier *= 1.1f;
+                            break;
+                        case 1:
+                            damageMultiplier *= 1.2f;
+                            break;
+                        case 2:
+                            damageMultiplier *= 1.4f;
+                            break;
+                        case 3:
+                            damageMultiplier *= 2f;
                             break;
                     }
                 }
