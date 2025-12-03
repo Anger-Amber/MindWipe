@@ -7,6 +7,7 @@ public class CompleteMovement : MonoBehaviour
     Rigidbody2D myRigidbody;
 
     [SerializeField] ContactFilter2D[] contactFilters;
+    LayerMask mask;
 
     [SerializeField] float coyoteFrames = 0.1f;
     float leftGroundTime;
@@ -80,9 +81,9 @@ public class CompleteMovement : MonoBehaviour
     {
         for (int i = 0; i < 3; i++)
         {
-            contactFilters[i].useNormalAngle = true;
-            contactFilters[i].minNormalAngle = 90 * i - 45;
-            contactFilters[i].maxNormalAngle = 90 * i + 45;
+            contactFilters[i].SetNormalAngle(90 * i - 45, 90 * i + 45);
+            contactFilters[i].SetLayerMask(mask = LayerMask.GetMask("Ground"));
+            contactFilters[i].useTriggers = false;
         }
         
         myRigidbody = GetComponent<Rigidbody2D>();
@@ -189,14 +190,21 @@ public class CompleteMovement : MonoBehaviour
     }
     void StandardMovement()
     {
+        if (Input.GetKey(KeyCode.A) != Input.GetKey(KeyCode.D))
+        {
+            myAnimator.SetBool("Running", true);
+        }
+        else
+        {
+            myAnimator.SetBool("Running", false);
+        }
         // Move left
         if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && myRigidbody.linearVelocityX > -movementSpeedCap)
         {
-            transform.localScale = new Vector3(-1,1,1);
+            transform.localScale = new Vector3(-1, 1, 1);
             lookingRight = false;
 
             myRigidbody.linearVelocityX -= movementSpeed * Time.deltaTime;
-            myAnimator.SetBool("Running", true);
         }
 
         // Move right
@@ -206,14 +214,13 @@ public class CompleteMovement : MonoBehaviour
             lookingRight = true;
 
             myRigidbody.linearVelocityX += movementSpeed * Time.deltaTime;
-            myAnimator.SetBool("Running", true);
 
         }
 
         // Deceleration if not going left or right
-        if ((((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) && !(leftWallL || leftWallR)) || (onGround && Mathf.Abs(myRigidbody.linearVelocityX) > movementSpeedCap ))
+        if (((Input.GetKey(KeyCode.A) == Input.GetKey(KeyCode.D)) 
+            && !(leftWallL || leftWallR)) || (onGround && Mathf.Abs(myRigidbody.linearVelocityX) > movementSpeedCap ))
         {
-            myAnimator.SetBool("Running", false);
 
             if (myRigidbody.linearVelocityX < -stopSpeed * Time.deltaTime)
             {
@@ -229,7 +236,8 @@ public class CompleteMovement : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.S) && (!onGround))
+        if (Input.GetKeyDown(KeyCode.S) && (!onGround) 
+            && (Input.GetKey(KeyCode.A) == Input.GetKey(KeyCode.D)))
         {
             myRigidbody.linearVelocityY -= fastFallSpeed;
             fastFall = true;
@@ -281,9 +289,8 @@ public class CompleteMovement : MonoBehaviour
 
             jumpTime = 0;
         }
-
         // Not jumping anymore if moving downwards
-        if (myRigidbody.linearVelocityY < 0)
+        if (myRigidbody.linearVelocityY < -0.001f)
         {
             myAnimator.SetBool("Airborn", true);
             myAnimator.SetBool("Jumping", false);
@@ -446,6 +453,8 @@ public class CompleteMovement : MonoBehaviour
 
         if (dashing && onGround && Input.GetKeyDown(KeyCode.Space))
         {
+            myAnimator.SetBool("DashEnd", true);
+            myAnimator.SetBool("Dashing", false);
             dashing = false;
             dashTime = 0;
         }
@@ -481,7 +490,8 @@ public class CompleteMovement : MonoBehaviour
             }
 
             // Smoothness when trying to move after dash
-            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && (myRigidbody.linearVelocityY) <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= movementSpeedCap)
+            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && 
+                myRigidbody.linearVelocityY <= 0.2 && Mathf.Abs(myRigidbody.linearVelocityX) <= movementSpeedCap)
             {
                 dashTime = 0;
                 dashing = false;
