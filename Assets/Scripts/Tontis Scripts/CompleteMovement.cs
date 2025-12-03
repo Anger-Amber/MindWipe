@@ -12,7 +12,7 @@ public class CompleteMovement : MonoBehaviour
     [SerializeField] float coyoteFrames = 0.1f;
     float leftGroundTime;
 
-    [Header("Standard movement")]
+    [Header("Standard Movement")]
 
     [SerializeField] float stopSpeed = 80;
     [SerializeField] float fastFallSpeed = 80;
@@ -77,6 +77,11 @@ public class CompleteMovement : MonoBehaviour
 
     Animator myAnimator;
 
+    [Header("Azure Alteration variables")]
+
+    [SerializeField] BoxCollider2D myHitBox2D;
+    public InventoryScript myInventory;
+
     void Awake()
     {
         for (int i = 0; i < 3; i++)
@@ -85,7 +90,8 @@ public class CompleteMovement : MonoBehaviour
             contactFilters[i].SetLayerMask(mask = LayerMask.GetMask("Ground"));
             contactFilters[i].useTriggers = false;
         }
-        
+
+        myHitBox2D = transform.GetChild(0).GetComponent<BoxCollider2D>();
         myRigidbody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
     }
@@ -103,6 +109,16 @@ public class CompleteMovement : MonoBehaviour
         Jumping();
 
         Parry();
+
+        //When dashing stuff happens.
+        if (dashing)
+        {
+            myHitBox2D.enabled = false;
+        }
+        else
+        {
+            myHitBox2D.enabled = true;
+        }
     }
 
     Vector2Int GetLookDirection(bool right)
@@ -381,7 +397,7 @@ public class CompleteMovement : MonoBehaviour
             onGround = false;
             numberOfDashes -= 1;
 
-            //cancel current movement to prepare for dash
+            //cancel current CompleteMovement to prepare for dash
             myRigidbody.linearVelocityX = 0;
             myRigidbody.linearVelocityY = 0;
 
@@ -535,6 +551,14 @@ public class CompleteMovement : MonoBehaviour
             Parrybox.gameObject.SetActive(false);
             onCooldown = true;
             parryTime = 0;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Item") == true)
+        {
+            myInventory.AddToInventory(collision.gameObject, collision.gameObject.GetComponent<ItemScript>().size);
         }
     }
 }

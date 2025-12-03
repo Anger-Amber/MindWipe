@@ -190,6 +190,9 @@ public class ProjectileShooter : MonoBehaviour
         shotBullet.transform.SetPositionAndRotation(firePoint.position, gameObject.transform.rotation);
         shotBullet.transform.Rotate(0,0,rotation);
 
+        //layer
+        shotBullet.layer = 10;
+
         //getting The Components Through Code
         SpriteRenderer spriteRenderer = shotBullet.GetComponent<SpriteRenderer>();
         Rigidbody2D bulletRigidbody = shotBullet.GetComponent<Rigidbody2D>();

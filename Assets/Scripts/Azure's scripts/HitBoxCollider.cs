@@ -8,34 +8,7 @@ public class HitBoxCollider : MonoBehaviour
     private void Awake()
     {
         DefineHealthBars();
-
-        //Debug.Log("My health bar is: " + myHealthbar);
-        //Debug.Log("My parents health bar is: " + parentsHealthBar);
     }
-
-    void DefineHealthBars()
-    {
-        if (myHealthbar == null)
-        {
-            //Debug.Log("My health bar is null");
-            myHealthbar = GetComponent<Health>();
-
-            if (myHealthbar == null)
-            {
-                //Debug.Log("My health bar is STILL null");
-                myHealthbar = GetComponentInParent<Health>();
-                parentsHealthBar = GetComponentInParent<Health>();
-            }
-        }
-    }
-
-    //private void FixedUpdate()
-    //{
-    //    if (myHealthbar == null)
-    //    {
-    //        DefineHealthBars();
-    //    }
-    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -51,6 +24,20 @@ public class HitBoxCollider : MonoBehaviour
         {
             myHealthbar.healthPoints -= collision.gameObject.GetComponent<Bullet>().damage;
             Time.timeScale = 0.1f;
+        }
+    }
+
+    void DefineHealthBars()
+    {
+        if (myHealthbar == null)
+        {
+            myHealthbar = GetComponent<Health>();
+
+            if (myHealthbar == null)
+            {
+                myHealthbar = GetComponentInParent<Health>();
+                parentsHealthBar = GetComponentInParent<Health>();
+            }
         }
     }
 }

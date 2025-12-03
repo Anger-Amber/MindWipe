@@ -41,7 +41,6 @@ public class Movement : MonoBehaviour
     //components
     [SerializeField] Rigidbody2D myRigidbody2D;
     [SerializeField] Transform myTransform;
-    [SerializeField] BoxCollider2D myHitBox2D;
     [SerializeField] Animator animator;
     public InventoryScript myInventory;
 
@@ -50,7 +49,6 @@ public class Movement : MonoBehaviour
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myTransform = GetComponent<Transform>();
-        myHitBox2D = transform.GetChild(0).GetComponent<BoxCollider2D>();
         moveSpeed *= 1000;
     }
 
@@ -61,7 +59,7 @@ public class Movement : MonoBehaviour
         maxSpeedXY.x = maxSpeedX;
         maxSpeedXY.y = maxSpeedY;
 
-        //movementCap
+        //CompleteMovementCap
         if (maxSpeedX < myRigidbody2D.linearVelocity.x)
         {
             if (dashing == false)
@@ -144,27 +142,18 @@ public class Movement : MonoBehaviour
             jumping = false;
         }
 
-        //When dashing stuff happens.
-        if (dashing)
-        {
-            myRigidbody2D.linearVelocityY = 0;
-            myHitBox2D.enabled = false;
-        }
-        else
-        {
-            myHitBox2D.enabled = true;
-        }
+        
 
-        //movement
+        //CompleteMovement
         if (Input.GetKey(KeyCode.D) && !dashing)
         {
-            MovementSpeed(moveSpeed);
+            CompleteMovementSpeed(moveSpeed);
             myTransform.localScale = Vector3.one;
         }
 
         if (Input.GetKey(KeyCode.A) && !dashing)
         {
-            MovementSpeed(-moveSpeed);
+            CompleteMovementSpeed(-moveSpeed);
             myTransform.localScale = new Vector3(-1,1,1);
         }
 
@@ -353,7 +342,7 @@ public class Movement : MonoBehaviour
     }
 
     //moving
-    void MovementSpeed(float moveSpeed)
+    void CompleteMovementSpeed(float moveSpeed)
     {
         myRigidbody2D.AddForceX(moveSpeed * Time.deltaTime);
     }

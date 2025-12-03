@@ -74,12 +74,12 @@ public class EnemyBehaviour : MonoBehaviour
         if (isInteractable && collision.CompareTag("Player"))
         {
             // if the interactable enemy is a shop and the player presses F, continue
-            if (isShop && Input.GetKeyDown(KeyCode.F))
+            if (isShop && Input.GetKey(KeyCode.F))
             {
                 // and lastly if the player has money they get the item the shop holds
-                if (collision.GetComponent<Movement>().myInventory.scrap >= itemCost)
+                if (collision.GetComponent<CompleteMovement>().myInventory.scrap >= itemCost)
                 {
-                    collision.GetComponent<Movement>().myInventory.scrap -= itemCost;
+                    collision.GetComponent<CompleteMovement>().myInventory.scrap -= itemCost;
                     transform.GetChild(0).gameObject.SetActive(true);
                     specificItemDropped = Instantiate(transform.GetChild(0).gameObject, transform.position,
                         Quaternion.Euler(transform.rotation.x, transform.rotation.y,

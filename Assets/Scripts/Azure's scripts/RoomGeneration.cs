@@ -1,4 +1,3 @@
-using TMPro.Examples;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,11 +13,11 @@ public class RoomGeneration : MonoBehaviour
     public BoundsInt newRoomTemplateLocation;
     public Vector3Int offset;
     [SerializeField] Vector2Int newRoomSize;
-    [SerializeField] bool enemiesAlive;
-    [SerializeField] bool repeatRoomCheck;
+    bool enemiesAlive;
+    bool repeatRoomCheck;
+    [SerializeField] bool isIntroduction;
     [SerializeField] Tilemap roomTiles;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         targets = GameObject.FindGameObjectWithTag("Targetables").GetComponent<Targetables>();
@@ -122,7 +121,8 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + 1)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + newRoomSize.y)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + newRoomSize.y)) == null &&
+                !isIntroduction)
         {
             offset = new Vector3Int((triggerLocation.x - newRoomSize.x + 1) * 16, triggerLocation.y * 11 + 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y, 0), basicTile);
@@ -131,7 +131,7 @@ public class RoomGeneration : MonoBehaviour
             roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y + 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles); 
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }
@@ -140,16 +140,17 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + 1, 0)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + newRoomSize.y, 0)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + newRoomSize.y, 0)) == null &&
+                !isIntroduction)
         {
-            offset = new Vector3Int((triggerLocation.x + newRoomSize.x - 1) * 16, triggerLocation.y * 11 + 11);
+            offset = new Vector3Int((triggerLocation.x) * 16, triggerLocation.y * 11 + 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + newRoomSize.y, 0), basicTile);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1, 0), basicTile);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + newRoomSize.y, 0), basicTile);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y + 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y + 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }
@@ -158,7 +159,8 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1, 0)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y, 0)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - 1, 0)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - newRoomSize.y, 0)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - newRoomSize.y, 0)) == null &&
+                !isIntroduction)
         {
             offset = new Vector3Int((triggerLocation.x) * 16, (triggerLocation.y - newRoomSize.y) * 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y, 0), basicTile);
@@ -167,7 +169,7 @@ public class RoomGeneration : MonoBehaviour
             roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x - 1, triggerLocation.y - 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }
@@ -176,7 +178,8 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - 1)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - newRoomSize.y)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - newRoomSize.y)) == null &&
+                !isIntroduction)
         {
             offset = new Vector3Int((triggerLocation.x - newRoomSize.x + 1) * 16, (triggerLocation.y - newRoomSize.y) * 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - newRoomSize.y, 0), basicTile);
@@ -185,7 +188,7 @@ public class RoomGeneration : MonoBehaviour
             roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x + 1, triggerLocation.y - 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);            
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x, triggerLocation.y - 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }
@@ -194,7 +197,8 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + newRoomSize.y)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + 1, 0)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + newRoomSize.y, 0)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + newRoomSize.y, 0)) == null &&
+                !isIntroduction)
         {
             offset = new Vector3Int((triggerLocation.x + 1) * 16, triggerLocation.y * 11 + 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + newRoomSize.y, 0), basicTile);
@@ -203,7 +207,7 @@ public class RoomGeneration : MonoBehaviour
             roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y + 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y + 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }
@@ -212,7 +216,8 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + newRoomSize.y)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + 1, 0)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + newRoomSize.y, 0)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + newRoomSize.y, 0)) == null &&
+                !isIntroduction)
         {
             offset = new Vector3Int((triggerLocation.x - newRoomSize.x) * 16, triggerLocation.y * 11 + 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + newRoomSize.y, 0), basicTile);
@@ -221,7 +226,7 @@ public class RoomGeneration : MonoBehaviour
             roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y + 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y + 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }
@@ -230,7 +235,8 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - newRoomSize.y)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - 1, 0)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - newRoomSize.y, 0)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - newRoomSize.y, 0)) == null &&
+                !isIntroduction)
         {
             offset = new Vector3Int((triggerLocation.x + 1) * 16, (triggerLocation.y - newRoomSize.y) * 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - newRoomSize.y, 0), basicTile);
@@ -239,7 +245,7 @@ public class RoomGeneration : MonoBehaviour
             roomLayout.SetTile(new Vector3Int(triggerLocation.x + newRoomSize.x, triggerLocation.y - 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x + 1, triggerLocation.y - 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }
@@ -248,7 +254,8 @@ public class RoomGeneration : MonoBehaviour
         if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - newRoomSize.y)) == null &&
                 roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - 1, 0)) == null &&
-                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - newRoomSize.y, 0)) == null)
+                roomLayout.GetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - newRoomSize.y, 0)) == null &&
+                !isIntroduction)
         {
             offset = new Vector3Int((triggerLocation.x - newRoomSize.x) * 16, (triggerLocation.y - newRoomSize.y) * 11);
             roomLayout.SetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - newRoomSize.y, 0), basicTile);
@@ -257,7 +264,7 @@ public class RoomGeneration : MonoBehaviour
             roomLayout.SetTile(new Vector3Int(triggerLocation.x - newRoomSize.x, triggerLocation.y - 1, 0), basicTile);
             GenerateRoom(basicTilemap, newRoomTemplateLocation, roomTiles);
         }
-        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1)) == null)
+        else if (roomLayout.GetTile(new Vector3Int(triggerLocation.x - 1, triggerLocation.y - 1)) == null && !isIntroduction)
         {
             repeatRoomCheck = true;
         }

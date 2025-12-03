@@ -8,6 +8,7 @@ public class ParryScript : MonoBehaviour
         if (other.CompareTag("Untagged"))
         {
             parent.ParryBoost();
+            Debug.Log(other.transform.name);
             Destroy(other.gameObject);
         }
     }
