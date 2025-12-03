@@ -5,21 +5,46 @@ using UnityEngine.Tilemaps;
 public class ArmedadilloScript : MonoBehaviour
 {
     BoxCollider2D myBoxCollider2D;
+    Rigidbody2D myRigidbody2D;
     ParticleSystem myParticleSystem;
     GameObject dupedParticleSystem;
     TilemapCollider2D groundTilesCollider;
     Tilemap groundTiles;
     [SerializeField] GameObject player;
+
+    [SerializeField] float actionTimer;
+    [SerializeField] int chosenAction;
+    [SerializeField] Animator biteAnimation;
     void Awake()
     {
         myBoxCollider2D = GetComponent<BoxCollider2D>();
+        myRigidbody2D = GetComponent<Rigidbody2D>();
         myParticleSystem = transform.GetChild(2).GetComponent<ParticleSystem>();
     }
 
     void Update()
     {
-        
+        myRigidbody2D.linearVelocityX = (player.transform.position.x - transform.position.x) * 0.5f;
+        myRigidbody2D.linearVelocityX += 10f;
+        actionTimer += Time.deltaTime;
+        if (actionTimer > 0)
+        {
+            chosenAction = Random.Range(0, 4);
+            switch (chosenAction)
+            {
+                case 0: // bite
+
+                    break;
+                case 1: // lazer
+                    break;
+                case 2: // saw
+                    break;
+                case 3: // bait
+                    break;
+            }
+        }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         DoCollision(collision.gameObject);
