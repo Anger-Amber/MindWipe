@@ -1,4 +1,3 @@
-using System.Data;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -13,8 +12,14 @@ public class ArmedadilloScript : MonoBehaviour
     [SerializeField] GameObject player;
 
     [SerializeField] float actionTimer;
+    [SerializeField] float telegraphWindow;
     [SerializeField] int chosenAction;
+    [SerializeField] Color warningFade;
+    [SerializeField] SpriteRenderer biteRenderer;
+    [SerializeField] Animator idleAnimator;
+    [SerializeField] AnimationClip idleAnim;
     [SerializeField] Animator biteAnimation;
+    [SerializeField] BoxCollider2D biteCollider;
     void Awake()
     {
         myBoxCollider2D = GetComponent<BoxCollider2D>();
@@ -26,14 +31,27 @@ public class ArmedadilloScript : MonoBehaviour
     {
         myRigidbody2D.linearVelocityX = (player.transform.position.x - transform.position.x) * 0.5f;
         myRigidbody2D.linearVelocityX += 10f;
+        idleAnimator.speed = myRigidbody2D.linearVelocityX / 20;
+
         actionTimer += Time.deltaTime;
         if (actionTimer > 0)
         {
-            chosenAction = Random.Range(0, 4);
+            biteCollider.enabled = false;
             switch (chosenAction)
             {
                 case 0: // bite
-
+                    biteAnimation.SetBool("Chomp", true);
+                    warningFade = biteRenderer.color;
+                    warningFade.a += Time.deltaTime / telegraphWindow;
+                    biteRenderer.color = warningFade;
+                    if (actionTimer > telegraphWindow)
+                    {
+                        biteCollider.enabled = true;
+                        actionTimer = -telegraphWindow;
+                        warningFade.a = 0f;
+                        biteRenderer.color = warningFade;
+                        chosenAction = Random.Range(0, 4);
+                    }
                     break;
                 case 1: // lazer
                     break;

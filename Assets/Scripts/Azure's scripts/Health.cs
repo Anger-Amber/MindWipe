@@ -25,7 +25,7 @@ public class Health : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         // Changes the healthbar if the player is alive
-        if (healthPoints >= 0 && isPlayer)
+        if (healthPoints > 0 && isPlayer)
         {
             scale = healthFill.transform.localScale;
             scale.x = healthPoints / 10;

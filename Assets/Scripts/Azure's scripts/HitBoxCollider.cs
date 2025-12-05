@@ -17,12 +17,22 @@ public class HitBoxCollider : MonoBehaviour
             myHealthbar.healthPoints -= collision.gameObject.GetComponent<Bullet>().damage;
             Time.timeScale = 0.1f;
         }
+        else if (collision.gameObject.GetComponent<ZoneDamage>() != null)
+        {
+            myHealthbar.healthPoints -= collision.gameObject.GetComponent<ZoneDamage>().damage;
+            Time.timeScale = 0.1f;
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {
             myHealthbar.healthPoints -= collision.gameObject.GetComponent<Bullet>().damage;
+            Time.timeScale = 0.1f;
+        }
+        else if (collision.gameObject.GetComponent<ZoneDamage>() != null)
+        {
+            myHealthbar.healthPoints -= collision.gameObject.GetComponent<ZoneDamage>().damage;
             Time.timeScale = 0.1f;
         }
     }
