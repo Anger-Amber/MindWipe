@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 public class ArmedadilloScript : MonoBehaviour
@@ -10,6 +11,9 @@ public class ArmedadilloScript : MonoBehaviour
     TilemapCollider2D groundTilesCollider;
     Tilemap groundTiles;
     [SerializeField] GameObject player;
+    [SerializeField] GameObject headController;
+    [SerializeField] GameObject gunController;
+    [SerializeField] GameObject firePoint;
 
     [SerializeField] float actionTimer;
     [SerializeField] float telegraphWindow;
@@ -36,10 +40,10 @@ public class ArmedadilloScript : MonoBehaviour
         actionTimer += Time.deltaTime;
         if (actionTimer > 0)
         {
-            biteCollider.enabled = false;
             switch (chosenAction)
             {
                 case 0: // bite
+                    firePoint.GetComponent<LazerFire>().playerImmune = false;
                     biteAnimation.SetBool("Chomp", true);
                     warningFade = biteRenderer.color;
                     warningFade.a += Time.deltaTime / telegraphWindow;
@@ -50,14 +54,25 @@ public class ArmedadilloScript : MonoBehaviour
                         actionTimer = -telegraphWindow;
                         warningFade.a = 0f;
                         biteRenderer.color = warningFade;
-                        chosenAction = Random.Range(0, 4);
+                        chosenAction = Random.Range(0, 2);
+                        biteAnimation.SetBool("Chomp", false);
                     }
                     break;
-                case 1: // lazer
+                case 1: // lazer up
+                    biteCollider.enabled = false;
+                    gunController.GetComponent<Light2D>().intensity += Time.deltaTime / telegraphWindow;
+                    firePoint.GetComponent<LazerFire>().isActive = true;
+                    gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * -180);
+                    Debug.Log(transform.rotation.z);
+                    if (actionTimer > telegraphWindow)
+                    {
+                        chosenAction = Random.Range(0, 2);
+                        actionTimer = -telegraphWindow;
+                    }
                     break;
                 case 2: // saw
                     break;
-                case 3: // bait
+                case 3: // saw
                     break;
             }
         }

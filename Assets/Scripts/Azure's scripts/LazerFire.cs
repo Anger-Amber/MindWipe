@@ -12,6 +12,7 @@ public class LazerFire : MonoBehaviour
     [SerializeField] float time;
     [SerializeField] float animationRate;
     [SerializeField] float damage;
+    public bool playerImmune;
 
     // non-Number Structs
     [SerializeField] Ray ray;
@@ -60,7 +61,7 @@ public class LazerFire : MonoBehaviour
                 }
             }
 
-            ray = new Ray(transform.position, transform.up);
+            ray = new Ray(transform.position, transform.right);
             float remainingRayLength = maxRayLength;
 
             for (int i = 0; i < reflections; i++)
@@ -70,14 +71,17 @@ public class LazerFire : MonoBehaviour
                 children[i].GetComponent<LineRenderer>().material.mainTextureOffset = offset;
                 children[i].GetComponent<LineRenderer>().textureMode = LineTextureMode.Tile;
                 children[i].GetComponent<LineRenderer>().sortingOrder = orderInLayer + i;
+                children[i].GetComponent<LineRenderer>().widthCurve = transform.GetComponent<LineRenderer>().widthCurve;
+                children[i].GetComponent<LineRenderer>().sortingOrder = transform.GetComponent<LineRenderer>().sortingOrder;
                 children[i].transform.parent = transform;
                 myLineRenderer[i] = children[i].GetComponent<LineRenderer>();
                 RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, remainingRayLength, ignoreLayer);
                 if (hit)
                 {
-                    if (hit.transform.GetChild(0) != null)
+                    if (hit.transform.GetChild(0) != null && !playerImmune)
                     {
                         hit.transform.GetComponent<Health>().healthPoints -= damage;
+                        playerImmune = true;
                     }
                     myLineRenderer[i].positionCount = 2;
                     myLineRenderer[i].SetPosition(0, ray.origin);
