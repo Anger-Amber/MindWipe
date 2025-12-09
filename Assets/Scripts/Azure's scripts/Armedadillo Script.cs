@@ -17,7 +17,10 @@ public class ArmedadilloScript : MonoBehaviour
 
     [SerializeField] float actionTimer;
     [SerializeField] float telegraphWindow;
+    [SerializeField] Vector2 launchPower;
     [SerializeField] int chosenAction;
+    [SerializeField] bool lazerUp;
+    [SerializeField] bool immunityFramesUp;
     [SerializeField] Color warningFade;
     [SerializeField] SpriteRenderer biteRenderer;
     [SerializeField] Animator idleAnimator;
@@ -37,42 +40,52 @@ public class ArmedadilloScript : MonoBehaviour
         myRigidbody2D.linearVelocityX += 10f;
         idleAnimator.speed = myRigidbody2D.linearVelocityX / 20;
 
-        actionTimer += Time.deltaTime;
+        //actionTimer += Time.deltaTime;
         if (actionTimer > 0)
         {
             switch (chosenAction)
             {
                 case 0: // bite
                     firePoint.GetComponent<LazerFire>().playerImmune = false;
+                    firePoint.GetComponent<LazerFire>().isActive = false;
+                    firePoint.GetComponent<Light2D>().enabled = false;
+                    gunController.GetComponent<Light2D>().enabled = false;
                     biteAnimation.SetBool("Chomp", true);
                     warningFade = biteRenderer.color;
                     warningFade.a += Time.deltaTime / telegraphWindow;
                     biteRenderer.color = warningFade;
                     if (actionTimer > telegraphWindow)
                     {
+                        biteCollider.GetComponent<ZoneDamage>().immuneObjects[0] = null;
                         biteCollider.enabled = true;
                         actionTimer = -telegraphWindow;
                         warningFade.a = 0f;
                         biteRenderer.color = warningFade;
                         chosenAction = Random.Range(0, 2);
                         biteAnimation.SetBool("Chomp", false);
+                        immunityFramesUp = true;
                     }
                     break;
                 case 1: // lazer up
                     biteCollider.enabled = false;
+                    firePoint.GetComponent<Light2D>().enabled = true;
                     gunController.GetComponent<Light2D>().intensity += Time.deltaTime / telegraphWindow;
+                    gunController.GetComponent<Light2D>().enabled = true;
                     firePoint.GetComponent<LazerFire>().isActive = true;
-                    gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * -180);
-                    Debug.Log(transform.rotation.z);
+                    if (lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * 200); }
+                    if (!lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * -200); }
                     if (actionTimer > telegraphWindow)
                     {
-                        chosenAction = Random.Range(0, 2);
+                        chosenAction = Random.Range(1, 2);
                         actionTimer = -telegraphWindow;
+                        lazerUp = !lazerUp;
+                        firePoint.GetComponent<LazerFire>().playerImmune = false;
+                        immunityFramesUp = true;
                     }
                     break;
                 case 2: // saw
                     break;
-                case 3: // saw
+                case 3: // bait?
                     break;
             }
         }
@@ -130,6 +143,16 @@ public class ArmedadilloScript : MonoBehaviour
             {
                 DeleteTile(-1, 1);
             }
+        }
+        else if (collision.transform.CompareTag("Player"))
+        {
+            if (!immunityFramesUp)
+            {
+                player.GetComponent<Health>().healthPoints -= headController.transform.GetChild(0).GetComponent<ZoneDamage>().damage;
+                immunityFramesUp = true;
+            }
+            player.GetComponent<Rigidbody2D>().linearVelocityY = launchPower.y;
+            player.GetComponent<Rigidbody2D>().linearVelocityX = launchPower.x;
         }
     }
 }

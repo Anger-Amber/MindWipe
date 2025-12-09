@@ -81,6 +81,7 @@ public class LazerFire : MonoBehaviour
                     if (hit.transform.GetChild(0) != null && !playerImmune)
                     {
                         hit.transform.GetComponent<Health>().healthPoints -= damage;
+                        Debug.Log(hit.transform.name);
                         playerImmune = true;
                     }
                     myLineRenderer[i].positionCount = 2;
