@@ -40,7 +40,7 @@ public class ArmedadilloScript : MonoBehaviour
         myRigidbody2D.linearVelocityX += 10f;
         idleAnimator.speed = myRigidbody2D.linearVelocityX / 20;
 
-        //actionTimer += Time.deltaTime;
+        actionTimer += Time.deltaTime;
         if (actionTimer > 0)
         {
             switch (chosenAction)
@@ -72,11 +72,11 @@ public class ArmedadilloScript : MonoBehaviour
                     gunController.GetComponent<Light2D>().intensity += Time.deltaTime / telegraphWindow;
                     gunController.GetComponent<Light2D>().enabled = true;
                     firePoint.GetComponent<LazerFire>().isActive = true;
-                    if (lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * 200); }
-                    if (!lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * -200); }
+                    if (lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * 400); }
+                    if (!lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * -400); }
                     if (actionTimer > telegraphWindow)
                     {
-                        chosenAction = Random.Range(1, 2);
+                        chosenAction = Random.Range(0, 2);
                         actionTimer = -telegraphWindow;
                         lazerUp = !lazerUp;
                         firePoint.GetComponent<LazerFire>().playerImmune = false;

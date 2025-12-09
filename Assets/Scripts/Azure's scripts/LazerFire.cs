@@ -4,7 +4,6 @@ using UnityEngine;
 public class LazerFire : MonoBehaviour
 {
     // number Structs
-    public bool isActive;
     [SerializeField] int currentFrame;
     [SerializeField] int reflections;
     [SerializeField] int orderInLayer;
@@ -13,6 +12,7 @@ public class LazerFire : MonoBehaviour
     [SerializeField] float animationRate;
     [SerializeField] float damage;
     public bool playerImmune;
+    public bool isActive;
 
     // non-Number Structs
     [SerializeField] Ray ray;
@@ -24,6 +24,7 @@ public class LazerFire : MonoBehaviour
     // components
     [SerializeField] Material[] myMaterial;
     [SerializeField] Transform targetHitTransform;
+    [SerializeField] GameObject player;
 
     // arrays
     [SerializeField] Transform[] newMirrors;
@@ -40,6 +41,9 @@ public class LazerFire : MonoBehaviour
 
     void Update()
     {
+        gameObject.GetComponent<LineRenderer>().SetPosition(0, transform.position);
+        gameObject.GetComponent<LineRenderer>().SetPosition(1, new Vector3(transform.position.x, transform.position.y, transform.position.z) + (transform.right * 100));
+
         for (int i = 0; i < children.Length; i++)
         {
             Destroy(children[i]);
@@ -76,14 +80,19 @@ public class LazerFire : MonoBehaviour
                 children[i].transform.parent = transform;
                 myLineRenderer[i] = children[i].GetComponent<LineRenderer>();
                 RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, remainingRayLength, ignoreLayer);
-                if (hit)
+                if (hit == true && hit.transform.CompareTag("Player") && !playerImmune)
                 {
-                    if (hit.transform.GetChild(0) != null && !playerImmune)
+                    player = hit.transform.gameObject;
+                    if (player.transform.GetChild(1).gameObject.activeSelf == false)
                     {
-                        hit.transform.GetComponent<Health>().healthPoints -= damage;
-                        Debug.Log(hit.transform.name);
-                        playerImmune = true;
+                        player.transform.GetComponent<Health>().healthPoints -= damage;
                     }
+                    player.transform.gameObject.layer = 2;
+                    playerImmune = true;
+                }
+                else if (hit == true)
+                {
+                    
                     myLineRenderer[i].positionCount = 2;
                     myLineRenderer[i].SetPosition(0, ray.origin);
                     myLineRenderer[i].SetPosition(1, hit.point);
@@ -101,7 +110,7 @@ public class LazerFire : MonoBehaviour
                         newMirrors[f].gameObject.layer = 0;
                         newMirrors[f].tag = "Untagged";
                     }
-                    newMirrors[newMirrors.Length - 1] = hit.transform;
+                    newMirrors[^1] = hit.transform;
                     oldMirrors = newMirrors;
                 }
                 else
@@ -118,6 +127,11 @@ public class LazerFire : MonoBehaviour
             }
             newMirrors = new Transform[0];
             oldMirrors = new Transform[0];
+            if (player != null) 
+            { 
+                player.layer = 6;
+                player.tag = "Player";
+            }
         }
     }
 }
