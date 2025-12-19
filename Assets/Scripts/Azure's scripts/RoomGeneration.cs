@@ -16,6 +16,10 @@ public class RoomGeneration : MonoBehaviour
     bool enemiesAlive;
     bool repeatRoomCheck;
     [SerializeField] bool isIntroduction;
+    [SerializeField] bool bossDead;
+    [SerializeField] GameObject lastRoom;
+    [SerializeField] GameObject emptyRoom;
+    [SerializeField] GameObject solidRoom;
     [SerializeField] Tilemap roomTiles;
 
     void Awake()
@@ -298,7 +302,15 @@ public class RoomGeneration : MonoBehaviour
                 }
             }
         }
-        roomTiles = transform.GetChild(4).GetChild(Random.Range(0, transform.GetChild(4).transform.childCount)).GetComponent<Tilemap>();
+        if (!bossDead)
+        {
+            roomTiles = transform.GetChild(4).GetChild(Random.Range(0, transform.GetChild(4).transform.childCount)).GetComponent<Tilemap>();
+        }
+        else
+        {
+            roomTiles = lastRoom.GetComponent<Tilemap>();
+            lastRoom = emptyRoom;
+        }
         newRoomSize = roomTiles.GetComponent<RoomSize>().roomSize;
     }
 }

@@ -36,58 +36,68 @@ public class ArmedadilloScript : MonoBehaviour
 
     void Update()
     {
-        myRigidbody2D.linearVelocityX = (player.transform.position.x - transform.position.x) * 0.5f;
-        myRigidbody2D.linearVelocityX += 10f;
-        idleAnimator.speed = myRigidbody2D.linearVelocityX / 20;
-
-        actionTimer += Time.deltaTime;
-        if (actionTimer > 0)
+        if (transform.GetComponent<Health>().healthPoints > 0)
         {
-            switch (chosenAction)
+            myRigidbody2D.linearVelocityX = (player.transform.position.x - transform.position.x) * 0.5f;
+            myRigidbody2D.linearVelocityX += 10f;
+            idleAnimator.speed = myRigidbody2D.linearVelocityX / 20;
+
+            actionTimer += Time.deltaTime;
+            if (actionTimer > 0)
             {
-                case 0: // bite
-                    firePoint.GetComponent<LazerFire>().playerImmune = false;
-                    firePoint.GetComponent<LazerFire>().isActive = false;
-                    firePoint.GetComponent<Light2D>().enabled = false;
-                    gunController.GetComponent<Light2D>().enabled = false;
-                    biteAnimation.SetBool("Chomp", true);
-                    warningFade = biteRenderer.color;
-                    warningFade.a += Time.deltaTime / telegraphWindow;
-                    biteRenderer.color = warningFade;
-                    if (actionTimer > telegraphWindow)
-                    {
-                        biteCollider.GetComponent<ZoneDamage>().immuneObjects[0] = null;
-                        biteCollider.enabled = true;
-                        actionTimer = -telegraphWindow;
-                        warningFade.a = 0f;
-                        biteRenderer.color = warningFade;
-                        chosenAction = Random.Range(0, 2);
-                        biteAnimation.SetBool("Chomp", false);
-                        immunityFramesUp = true;
-                    }
-                    break;
-                case 1: // lazer up
-                    biteCollider.enabled = false;
-                    firePoint.GetComponent<Light2D>().enabled = true;
-                    gunController.GetComponent<Light2D>().intensity += Time.deltaTime / telegraphWindow;
-                    gunController.GetComponent<Light2D>().enabled = true;
-                    firePoint.GetComponent<LazerFire>().isActive = true;
-                    if (lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * 400); }
-                    if (!lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * -400); }
-                    if (actionTimer > telegraphWindow)
-                    {
-                        chosenAction = Random.Range(0, 2);
-                        actionTimer = -telegraphWindow;
-                        lazerUp = !lazerUp;
+                switch (chosenAction)
+                {
+                    case 0: // bite
                         firePoint.GetComponent<LazerFire>().playerImmune = false;
-                        immunityFramesUp = true;
-                    }
-                    break;
-                case 2: // saw
-                    break;
-                case 3: // bait?
-                    break;
+                        firePoint.GetComponent<LazerFire>().isActive = false;
+                        firePoint.GetComponent<Light2D>().enabled = false;
+                        gunController.GetComponent<Light2D>().enabled = false;
+                        biteAnimation.SetBool("Chomp", true);
+                        warningFade = biteRenderer.color;
+                        warningFade.a += Time.deltaTime / telegraphWindow;
+                        biteRenderer.color = warningFade;
+                        if (actionTimer > telegraphWindow)
+                        {
+                            biteCollider.GetComponent<ZoneDamage>().immuneObjects[0] = null;
+                            biteCollider.enabled = true;
+                            actionTimer = -telegraphWindow;
+                            warningFade.a = 0f;
+                            biteRenderer.color = warningFade;
+                            chosenAction = Random.Range(0, 2);
+                            biteAnimation.SetBool("Chomp", false);
+                            immunityFramesUp = true;
+                        }
+                        break;
+                    case 1: // lazer up
+                        biteCollider.enabled = false;
+                        firePoint.GetComponent<Light2D>().enabled = true;
+                        gunController.GetComponent<Light2D>().intensity += Time.deltaTime / telegraphWindow;
+                        gunController.GetComponent<Light2D>().enabled = true;
+                        firePoint.GetComponent<LazerFire>().isActive = true;
+                        if (lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * 400); }
+                        if (!lazerUp) { gunController.transform.Rotate(0, 0, Time.deltaTime * telegraphWindow * -400); }
+                        if (actionTimer > telegraphWindow)
+                        {
+                            chosenAction = Random.Range(0, 2);
+                            actionTimer = -telegraphWindow;
+                            lazerUp = !lazerUp;
+                            firePoint.GetComponent<LazerFire>().playerImmune = false;
+                            immunityFramesUp = true;
+                        }
+                        break;
+                    case 2: // saw
+                        break;
+                    case 3: // bait?
+                        break;
+                }
             }
+        }
+
+        else
+        {
+            myRigidbody2D.bodyType = RigidbodyType2D.Static;
+            biteAnimation.enabled = false;
+            idleAnimator.enabled = false;
         }
     }
 
