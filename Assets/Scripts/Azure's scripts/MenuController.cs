@@ -23,7 +23,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] Color uiMenuColorOld;
     [SerializeField] float fadeSpeed;
     [SerializeField] float slideSpeed;
-    [SerializeField] int musicVolume;
+    public int musicVolume;
     [SerializeField] int menuButtonSelected;
     [SerializeField] bool startMenu;
     [SerializeField] bool settingsMenu;
