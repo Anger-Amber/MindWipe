@@ -22,10 +22,10 @@ public class Health : MonoBehaviour
         // Restart key
         if (Input.GetKey(KeyCode.Escape))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(1);
         }
         // Changes the healthbar if the player is alive
-        if (healthPoints >= 0 && isPlayer)
+        if (healthPoints > 0 && isPlayer)
         {
             scale = healthFill.transform.localScale;
             scale.x = healthPoints / 10;
@@ -34,7 +34,7 @@ public class Health : MonoBehaviour
         // Reloads the scene if the player is dead
         else if (healthPoints <= 0 && isPlayer)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(1);
         }
     }
 }

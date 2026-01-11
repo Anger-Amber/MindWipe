@@ -11,6 +11,7 @@ TagManager:
   - Item
   - Targetables
   - Room trigger
+  - Mirror
   layers:
   - Default
   - TransparentFX
